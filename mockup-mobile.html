@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="id" class="">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>QMS BONECOM · Mobile UI/UX Mockup 2026</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind (Play CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        primary: { DEFAULT:'#C8102E', 600:'#C8102E', 700:'#A60D26', 50:'#FDECEF' },
+        ink:'#1F2937',
+        accent:'#2563EB',
+        canvas:'#F8FAFC',
+        surface:'#FFFFFF',
+        line:'#E5E7EB',
+        success:'#10B981', warning:'#F59E0B', danger:'#EF4444',
+      },
+      fontFamily: { sans:['Inter','system-ui','sans-serif'], display:['"Plus Jakarta Sans"','Inter','sans-serif'] },
+      borderRadius: { xl:'16px','2xl':'20px','3xl':'24px','4xl':'28px' },
+      boxShadow: {
+        soft:'0 8px 30px rgba(15,23,42,.08)',
+        card:'0 2px 14px rgba(15,23,42,.06)',
+        pop:'0 20px 50px rgba(15,23,42,.18)',
+      },
+    }
+  }
+}
+</script>
+
+<!-- Chart.js + Lucide -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<style>
+  :root{ --pri:#C8102E; }
+  *{ -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{ font-family:'Inter',sans-serif; }
+  ::-webkit-scrollbar{ width:0; height:0; }
+
+  /* stage / backdrop */
+  .stage{ min-height:100vh; display:flex; align-items:center; justify-content:center; gap:40px;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #ffe1e6 0%, transparent 55%),
+      radial-gradient(1000px 700px at 110% 20%, #dbe6ff 0%, transparent 55%),
+      linear-gradient(180deg,#eef2f7,#e6ebf2); padding:32px 20px; }
+  html.dark .stage{ background:
+      radial-gradient(1200px 600px at 15% -10%, #3a0d16 0%, transparent 55%),
+      radial-gradient(1000px 700px at 110% 20%, #10233f 0%, transparent 55%),
+      linear-gradient(180deg,#0b1220,#0a0f1a); }
+
+  /* device */
+  .device{ position:relative; width:390px; height:min(844px,92vh); flex:none;
+    background:#000; border-radius:52px; padding:12px;
+    box-shadow:0 40px 90px rgba(2,6,23,.45), inset 0 0 0 2px #1c1c1e; }
+  .screenArea{ position:relative; width:100%; height:100%; border-radius:42px; overflow:hidden; background:#F8FAFC; }
+  html.dark .screenArea{ background:#0b1220; }
+  .island{ position:absolute; top:20px; left:50%; transform:translateX(-50%); width:118px; height:34px; background:#000; border-radius:20px; z-index:60; }
+  .statusbar{ position:absolute; top:0; left:0; right:0; height:54px; z-index:55; display:flex; align-items:center; justify-content:space-between;
+    padding:18px 30px 0; font-size:13px; font-weight:600; color:#0b1220; pointer-events:none; }
+  html.dark .statusbar{ color:#e8edf5; }
+
+  /* screens */
+  .screen{ position:absolute; inset:0; overflow-y:auto; overflow-x:hidden; opacity:0; visibility:hidden;
+    transform:translateY(10px) scale(.995); transition:opacity .28s ease, transform .28s ease, visibility .28s;
+    padding-top:54px; }
+  .screen.active{ opacity:1; visibility:visible; transform:none; }
+  .screen.noStatus{ padding-top:0; }
+  .hasNav{ padding-bottom:92px; }
+
+  /* bottom nav */
+  .bottomnav{ position:absolute; left:12px; right:12px; bottom:14px; z-index:50; height:66px;
+    background:rgba(255,255,255,.86); backdrop-filter:blur(18px); border:1px solid rgba(229,231,235,.9);
+    border-radius:26px; box-shadow:0 12px 34px rgba(15,23,42,.14); display:flex; align-items:center; justify-content:space-around;
+    opacity:0; transform:translateY(20px); transition:.3s; pointer-events:none; }
+  .bottomnav.show{ opacity:1; transform:none; pointer-events:auto; }
+  html.dark .bottomnav{ background:rgba(17,24,39,.86); border-color:rgba(55,65,81,.7); }
+  .navbtn{ position:relative; display:flex; flex-direction:column; align-items:center; gap:3px; width:60px; color:#94a3b8; font-size:10px; font-weight:600; }
+  .navbtn.on{ color:var(--pri); }
+  .navbtn.on .navdot{ opacity:1; }
+  .navdot{ position:absolute; top:-9px; width:20px; height:3px; border-radius:3px; background:var(--pri); opacity:0; transition:.2s; }
+
+  /* fab */
+  .fab{ position:absolute; right:22px; bottom:96px; z-index:52; width:58px; height:58px; border-radius:20px;
+    background:linear-gradient(135deg,#e11d38,#C8102E); color:#fff; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 14px 30px rgba(200,16,46,.45); transition:.15s; }
+  .fab:active{ transform:scale(.92); }
+
+  /* utilities */
+  .glass{ background:rgba(255,255,255,.7); backdrop-filter:blur(16px); }
+  .no-scrollbar::-webkit-scrollbar{ display:none; }
+  .press{ transition:transform .12s ease; } .press:active{ transform:scale(.97); }
+  .fadein{ animation:fadein .5s both; } @keyframes fadein{ from{opacity:0; transform:translateY(8px)} to{opacity:1;transform:none} }
+  .stagger>*{ animation:fadein .5s both; }
+  .stagger>*:nth-child(2){animation-delay:.05s}.stagger>*:nth-child(3){animation-delay:.1s}.stagger>*:nth-child(4){animation-delay:.15s}.stagger>*:nth-child(5){animation-delay:.2s}.stagger>*:nth-child(6){animation-delay:.25s}
+  .ring{ transform:rotate(-90deg); }
+  .skeleton{ background:linear-gradient(90deg,#eef1f5 25%,#e2e7ee 37%,#eef1f5 63%); background-size:400% 100%; animation:sk 1.3s infinite; }
+  @keyframes sk{ 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+  .sheetWrap{ position:absolute; inset:0; z-index:70; display:none; }
+  .sheetWrap.open{ display:block; }
+  .sheetBg{ position:absolute; inset:0; background:rgba(2,6,23,.4); opacity:0; transition:.25s; }
+  .sheetWrap.open .sheetBg{ opacity:1; }
+  .sheet{ position:absolute; left:0; right:0; bottom:0; background:#fff; border-radius:26px 26px 0 0; padding:8px 20px 26px; transform:translateY(100%); transition:.32s cubic-bezier(.22,1,.36,1); }
+  html.dark .sheet{ background:#111827; }
+  .sheetWrap.open .sheet{ transform:none; }
+  .toast{ position:absolute; left:20px; right:20px; bottom:110px; z-index:80; background:#111827; color:#fff; border-radius:16px; padding:13px 16px;
+    display:flex; align-items:center; gap:10px; font-size:13px; font-weight:500; box-shadow:0 16px 40px rgba(0,0,0,.3); transform:translateY(24px); opacity:0; transition:.3s; pointer-events:none; }
+  .toast.show{ transform:none; opacity:1; }
+
+  /* reviewer rail (desktop only) */
+  .rail{ width:230px; flex:none; align-self:stretch; max-height:92vh; overflow-y:auto; }
+  @media (max-width:1024px){ .rail{ display:none; } .stage{ padding:14px; } }
+  @media (max-width:430px){ .device{ width:100%; height:100dvh; border-radius:0; padding:0; box-shadow:none; } .screenArea{ border-radius:0; } .stage{ padding:0; } }
+  .railbtn{ width:100%; text-align:left; font-size:13px; font-weight:600; color:#475569; padding:9px 12px; border-radius:12px; display:flex; align-items:center; gap:9px; }
+  .railbtn:hover{ background:#fff; color:var(--pri); }
+  .railbtn.on{ background:#fff; color:var(--pri); box-shadow:0 2px 10px rgba(15,23,42,.06); }
+
+  input,textarea,select{ font-family:inherit; }
+</style>
+</head>
+
+<body class="text-ink">
+<div class="stage">
+
+  <!-- ============ REVIEWER RAIL (desktop) ============ -->
+  <aside class="rail no-scrollbar">
+    <div class="flex items-center gap-2 px-2 mb-3">
+      <div class="w-9 h-9 rounded-xl bg-primary text-white grid place-items-center font-extrabold font-display">Q</div>
+      <div>
+        <div class="font-extrabold font-display leading-tight text-ink dark:text-white">QMS Mobile</div>
+        <div class="text-[11px] text-slate-400 font-semibold">Mockup 2026 · v1</div>
+      </div>
+    </div>
+    <div id="rail" class="space-y-0.5 px-1 pb-4"></div>
+    <div class="px-3 pt-3 border-t border-slate-200/70">
+      <button onclick="toggleDark()" class="railbtn"><i data-lucide="moon-star" class="w-4 h-4"></i> Toggle Dark Mode</button>
+    </div>
+  </aside>
+
+  <!-- ============ DEVICE ============ -->
+  <div class="device">
+    <div class="screenArea">
+      <div class="island"></div>
+      <div class="statusbar">
+        <span id="clock">09:41</span>
+        <span class="flex items-center gap-1.5">
+          <i data-lucide="signal" class="w-4 h-4"></i>
+          <i data-lucide="wifi" class="w-4 h-4"></i>
+          <i data-lucide="battery-full" class="w-5 h-5"></i>
+        </span>
+      </div>
+
+      <!-- ========================================================= SPLASH -->
+      <section class="screen noStatus active" id="s-splash">
+        <div class="h-full w-full grid place-items-center relative overflow-hidden text-white"
+             style="background:radial-gradient(120% 90% at 50% 0%, #e11d38 0%, #C8102E 42%, #7a0b1e 100%)">
+          <div class="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/10 blur-2xl"></div>
+          <div class="absolute bottom-10 -right-16 w-64 h-64 rounded-full bg-black/20 blur-2xl"></div>
+          <div class="relative text-center fadein">
+            <div class="w-24 h-24 mx-auto rounded-3xl bg-white/12 border border-white/25 grid place-items-center mb-6 backdrop-blur">
+              <div class="w-14 h-11 rounded-lg border-[3px] border-white relative">
+                <span class="absolute inset-1.5 border-l-[6px] border-white/50 border-r-[6px] border-white rounded-sm"></span>
+              </div>
+            </div>
+            <div class="font-display font-extrabold text-2xl tracking-tight">BONECOM TRICOM</div>
+            <div class="text-white/80 font-semibold tracking-[.35em] text-sm mt-1">Q M S</div>
+            <div class="mt-8 w-10 h-10 mx-auto rounded-full border-[3px] border-white/25 border-t-white animate-spin"></div>
+            <div class="text-white/70 text-xs mt-5 font-medium">Quality Management System · ISO 9001 : 2015</div>
+          </div>
+          <div class="absolute bottom-9 text-white/60 text-[11px] font-medium">v2.6.0 — Enterprise Edition</div>
+        </div>
+      </section>
+
+      <!-- ========================================================= LOGIN -->
+      <section class="screen noStatus" id="s-login">
+        <div class="h-full relative overflow-hidden">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg,#fff 0%,#f5f7fb 100%)"></div>
+          <div class="absolute -top-24 -right-20 w-72 h-72 rounded-full bg-primary/15 blur-3xl"></div>
+          <div class="absolute -bottom-24 -left-16 w-72 h-72 rounded-full bg-accent/15 blur-3xl"></div>
+          <div class="absolute top-16 right-5">
+            <button onclick="toggleDark()" class="w-10 h-10 rounded-full glass border border-line grid place-items-center press"><i data-lucide="moon-star" class="w-5 h-5 text-ink"></i></button>
+          </div>
+
+          <div class="relative h-full flex flex-col justify-center px-6 pt-10">
+            <div class="w-16 h-16 rounded-3xl bg-primary grid place-items-center shadow-soft mb-5">
+              <div class="w-9 h-7 rounded border-2 border-white relative"><span class="absolute inset-1 border-r-2 border-white rounded-sm"></span></div>
+            </div>
+            <h1 class="font-display text-[26px] font-extrabold text-ink leading-tight">Selamat datang 👋</h1>
+            <p class="text-slate-500 text-sm mt-1 mb-6">Masuk untuk mengelola audit & dokumen mutu Anda.</p>
+
+            <div class="rounded-3xl border border-line bg-white/80 backdrop-blur shadow-soft p-5 space-y-4">
+              <label class="block">
+                <span class="text-xs font-semibold text-slate-500">Email</span>
+                <div class="mt-1.5 flex items-center gap-2 rounded-2xl border border-line bg-canvas px-3.5 h-12 focus-within:border-primary transition">
+                  <i data-lucide="mail" class="w-4 h-4 text-slate-400"></i>
+                  <input class="flex-1 bg-transparent text-sm outline-none" value="fina@bonecomtricom.com" />
+                </div>
+              </label>
+              <label class="block">
+                <span class="text-xs font-semibold text-slate-500">Password</span>
+                <div class="mt-1.5 flex items-center gap-2 rounded-2xl border border-line bg-canvas px-3.5 h-12 focus-within:border-primary transition">
+                  <i data-lucide="lock" class="w-4 h-4 text-slate-400"></i>
+                  <input type="password" class="flex-1 bg-transparent text-sm outline-none" value="••••••••" />
+                  <i data-lucide="eye" class="w-4 h-4 text-slate-400"></i>
+                </div>
+              </label>
+              <div class="flex items-center justify-between">
+                <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                  <span class="w-9 h-5 rounded-full bg-primary relative"><span class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-white shadow"></span></span>
+                  Ingat saya
+                </label>
+                <a class="text-xs font-semibold text-primary">Lupa password?</a>
+              </div>
+              <button onclick="go('dashboard')" class="w-full h-12 rounded-2xl bg-primary text-white font-semibold shadow-soft press flex items-center justify-center gap-2">
+                Masuk <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <div class="mt-6 flex items-center gap-3 text-slate-300"><span class="h-px flex-1 bg-line"></span><span class="text-[11px] font-semibold text-slate-400">atau</span><span class="h-px flex-1 bg-line"></span></div>
+            <button class="mt-4 w-full h-12 rounded-2xl border border-line bg-white font-semibold text-sm text-ink flex items-center justify-center gap-2 press"><i data-lucide="fingerprint" class="w-5 h-5 text-primary"></i> Masuk dengan Biometrik</button>
+            <p class="text-center text-[11px] text-slate-400 mt-6">Butuh bantuan? Hubungi <b class="text-slate-600">IT / Document Control</b></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= DASHBOARD -->
+      <section class="screen hasNav" id="s-dashboard">
+        <!-- sticky header -->
+        <div class="sticky top-0 z-30 px-5 pt-2 pb-3 bg-canvas/85 backdrop-blur-md dark:bg-slate-900/80">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary to-[#7a0b1e] grid place-items-center text-white font-bold shadow-soft">FS</div>
+            <div class="flex-1">
+              <div class="text-[11px] text-slate-400 font-semibold">Selamat pagi,</div>
+              <div class="font-display font-extrabold text-ink dark:text-white leading-tight">Fina Sabrina</div>
+            </div>
+            <button class="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 grid place-items-center press"><i data-lucide="search" class="w-5 h-5 text-slate-500"></i></button>
+            <button onclick="go('notifications')" class="relative w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 grid place-items-center press">
+              <i data-lucide="bell" class="w-5 h-5 text-slate-500"></i>
+              <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold grid place-items-center border-2 border-canvas">4</span>
+            </button>
+          </div>
+          <div class="mt-2 flex items-center gap-2">
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">Document Control</span>
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">Quality Management</span>
+          </div>
+        </div>
+
+        <div class="px-5 space-y-4 stagger">
+          <!-- announcement -->
+          <div class="rounded-3xl p-4 text-white relative overflow-hidden shadow-soft" style="background:linear-gradient(120deg,#C8102E,#e11d38)">
+            <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10"></div>
+            <div class="relative flex items-start gap-3">
+              <i data-lucide="megaphone" class="w-5 h-5 mt-0.5"></i>
+              <div>
+                <div class="font-semibold text-sm">Audit Internal Semester 2 dimulai 15 Jan 2026</div>
+                <div class="text-white/80 text-xs mt-0.5">3 jadwal menunggu persetujuan MR.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI scroller -->
+          <div class="flex gap-3 overflow-x-auto no-scrollbar -mx-1 px-1">
+            <div class="kpi press min-w-[150px] rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+              <div class="w-9 h-9 rounded-xl bg-accent/10 grid place-items-center mb-3"><i data-lucide="clipboard-check" class="w-5 h-5 text-accent"></i></div>
+              <div class="text-3xl font-extrabold font-display text-ink dark:text-white counter" data-to="78">0</div>
+              <div class="text-xs text-slate-400 font-semibold mt-0.5">Progress Audit %</div>
+              <div class="text-[11px] font-semibold text-success mt-1 flex items-center gap-1"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> +12% bln ini</div>
+            </div>
+            <div class="kpi press min-w-[150px] rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+              <div class="w-9 h-9 rounded-xl bg-danger/10 grid place-items-center mb-3"><i data-lucide="alert-triangle" class="w-5 h-5 text-danger"></i></div>
+              <div class="text-3xl font-extrabold font-display text-ink dark:text-white counter" data-to="14">0</div>
+              <div class="text-xs text-slate-400 font-semibold mt-0.5">Open Findings</div>
+              <div class="text-[11px] font-semibold text-danger mt-1 flex items-center gap-1"><i data-lucide="dot" class="w-4 h-4"></i> 3 overdue</div>
+            </div>
+            <div class="kpi press min-w-[150px] rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+              <div class="w-9 h-9 rounded-xl bg-warning/10 grid place-items-center mb-3"><i data-lucide="hourglass" class="w-5 h-5 text-warning"></i></div>
+              <div class="text-3xl font-extrabold font-display text-ink dark:text-white counter" data-to="6">0</div>
+              <div class="text-xs text-slate-400 font-semibold mt-0.5">Menunggu Approval</div>
+              <div class="text-[11px] font-semibold text-slate-400 mt-1">MR & Atasan</div>
+            </div>
+          </div>
+
+          <!-- charts row -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+              <div class="text-xs font-bold text-ink dark:text-white mb-1">Temuan by Severity</div>
+              <div class="relative h-[120px]"><canvas id="chDonut"></canvas>
+                <div class="absolute inset-0 grid place-items-center pointer-events-none">
+                  <div class="text-center -mt-1"><div class="text-xl font-extrabold font-display text-ink dark:text-white">42</div><div class="text-[10px] text-slate-400 font-semibold">Total</div></div>
+                </div>
+              </div>
+              <div class="flex justify-center gap-3 mt-2 text-[10px] font-semibold">
+                <span class="flex items-center gap-1 text-slate-500"><span class="w-2 h-2 rounded-full bg-danger"></span>Major</span>
+                <span class="flex items-center gap-1 text-slate-500"><span class="w-2 h-2 rounded-full bg-warning"></span>Minor</span>
+                <span class="flex items-center gap-1 text-slate-500"><span class="w-2 h-2 rounded-full bg-accent"></span>OFI</span>
+              </div>
+            </div>
+            <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+              <div class="text-xs font-bold text-ink dark:text-white mb-1">Audit / Departemen</div>
+              <div class="h-[150px]"><canvas id="chBar"></canvas></div>
+            </div>
+          </div>
+
+          <!-- quick menu -->
+          <div>
+            <div class="flex items-center justify-between mb-2"><h3 class="font-display font-bold text-ink dark:text-white">Menu Cepat</h3><a onclick="go('modules')" class="text-xs font-semibold text-primary">Semua</a></div>
+            <div class="grid grid-cols-4 gap-3">
+              <button onclick="go('audit')" class="qm"><span class="qmi bg-primary/10 text-primary"><i data-lucide="shield-check" class="w-5 h-5"></i></span>Audit</button>
+              <button onclick="go('finding')" class="qm"><span class="qmi bg-danger/10 text-danger"><i data-lucide="flag" class="w-5 h-5"></i></span>Finding</button>
+              <button onclick="go('documents')" class="qm"><span class="qmi bg-accent/10 text-accent"><i data-lucide="folder-open" class="w-5 h-5"></i></span>Dokumen</button>
+              <button onclick="go('reports')" class="qm"><span class="qmi bg-success/10 text-success"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></span>Laporan</button>
+            </div>
+          </div>
+
+          <!-- upcoming audit -->
+          <div>
+            <div class="flex items-center justify-between mb-2"><h3 class="font-display font-bold text-ink dark:text-white">Jadwal Terdekat</h3><a onclick="go('audit')" class="text-xs font-semibold text-primary">Lihat</a></div>
+            <div class="space-y-2.5">
+              <div onclick="go('audit-detail')" class="press flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 shadow-card">
+                <div class="w-12 h-12 rounded-2xl bg-primary/10 grid place-items-center text-center leading-none"><div><div class="text-lg font-extrabold text-primary font-display">15</div><div class="text-[9px] font-bold text-primary/70">JAN</div></div></div>
+                <div class="flex-1 min-w-0"><div class="font-semibold text-sm text-ink dark:text-white truncate">Audit Internal — Quality Management</div><div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2"><i data-lucide="clock" class="w-3 h-3"></i> 08:30 · Ruang Bima 2</div></div>
+                <span class="badge bg-warning/10 text-warning">Pending</span>
+              </div>
+              <div onclick="go('audit-detail')" class="press flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 shadow-card">
+                <div class="w-12 h-12 rounded-2xl bg-accent/10 grid place-items-center text-center leading-none"><div><div class="text-lg font-extrabold text-accent font-display">19</div><div class="text-[9px] font-bold text-accent/70">JAN</div></div></div>
+                <div class="flex-1 min-w-0"><div class="font-semibold text-sm text-ink dark:text-white truncate">Audit Internal — HR & GA</div><div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2"><i data-lucide="clock" class="w-3 h-3"></i> 13:00 · Ruang Bima 2</div></div>
+                <span class="badge bg-success/10 text-success">Shared</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- approval waiting -->
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+            <div class="flex items-center justify-between mb-3"><h3 class="font-display font-bold text-ink dark:text-white text-sm">Menunggu Persetujuan Anda</h3><span class="badge bg-primary/10 text-primary">2</span></div>
+            <div class="flex items-center gap-3 py-2">
+              <div class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 grid place-items-center text-xs font-bold text-slate-500">AP</div>
+              <div class="flex-1 min-w-0"><div class="text-sm font-semibold text-ink dark:text-white truncate">CAPA IA-2026-033/F-001</div><div class="text-[11px] text-slate-400">Corrective action · Minor NC</div></div>
+              <button onclick="toast('Disetujui ✓')" class="w-9 h-9 rounded-xl bg-success/10 text-success grid place-items-center press"><i data-lucide="check" class="w-4 h-4"></i></button>
+              <button onclick="toast('Diminta revisi')" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-500 grid place-items-center press"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div class="h-px bg-line dark:bg-slate-700 my-1"></div>
+            <div class="flex items-center gap-3 py-2">
+              <div class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 grid place-items-center text-xs font-bold text-slate-500">SA</div>
+              <div class="flex-1 min-w-0"><div class="text-sm font-semibold text-ink dark:text-white truncate">Jadwal SA-2026-011</div><div class="text-[11px] text-slate-400">Approval MR</div></div>
+              <button onclick="toast('Disetujui ✓')" class="w-9 h-9 rounded-xl bg-success/10 text-success grid place-items-center press"><i data-lucide="check" class="w-4 h-4"></i></button>
+              <button onclick="toast('Ditolak')" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-500 grid place-items-center press"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+          </div>
+
+          <!-- recent activity timeline -->
+          <div>
+            <h3 class="font-display font-bold text-ink dark:text-white mb-2">Aktivitas Terbaru</h3>
+            <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+              <ol class="relative border-l-2 border-line dark:border-slate-700 ml-1 space-y-4">
+                <li class="pl-4 relative"><span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-success ring-4 ring-success/15"></span><div class="text-sm font-semibold text-ink dark:text-white">Temuan IA-2026-033/F-001 ditutup</div><div class="text-[11px] text-slate-400">Apriyanto N.A · 2 jam lalu</div></li>
+                <li class="pl-4 relative"><span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-accent ring-4 ring-accent/15"></span><div class="text-sm font-semibold text-ink dark:text-white">Verifikasi auditor — F-004</div><div class="text-[11px] text-slate-400">Fatih B.A · 3 jam lalu</div></li>
+                <li class="pl-4 relative"><span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-warning ring-4 ring-warning/15"></span><div class="text-sm font-semibold text-ink dark:text-white">SOP-PRD-014 Rev.3 menunggu approval</div><div class="text-[11px] text-slate-400">Document Control · kemarin</div></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= MODULES HUB -->
+      <section class="screen hasNav" id="s-modules">
+        <div class="subhead"><span class="font-display font-extrabold text-lg text-ink dark:text-white">Semua Modul</span></div>
+        <div class="px-5 pb-4 space-y-5" id="modulesBody"></div>
+      </section>
+
+      <!-- ========================================================= AUDIT LIST -->
+      <section class="screen hasNav" id="s-audit">
+        <div class="subhead flex items-center gap-2">
+          <button onclick="go('dashboard')" class="backbtn"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+          <span class="font-display font-extrabold text-lg text-ink dark:text-white flex-1">Audit Internal</span>
+          <button class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 grid place-items-center press"><i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-500"></i></button>
+        </div>
+        <div class="px-5">
+          <div class="flex items-center gap-2 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 px-3.5 h-11 shadow-card"><i data-lucide="search" class="w-4 h-4 text-slate-400"></i><input placeholder="Cari kode / departemen…" class="flex-1 bg-transparent text-sm outline-none"/></div>
+          <div class="flex gap-2 overflow-x-auto no-scrollbar mt-3 -mx-1 px-1">
+            <span class="chip chip-on">Semua</span><span class="chip">Pending</span><span class="chip">Approved</span><span class="chip">Shared</span><span class="chip">Closed</span>
+          </div>
+        </div>
+        <div class="px-5 mt-3 space-y-3 stagger" id="auditList"></div>
+      </section>
+
+      <!-- ========================================================= AUDIT DETAIL -->
+      <section class="screen hasNav" id="s-audit-detail">
+        <div class="subhead flex items-center gap-2">
+          <button onclick="go('audit')" class="backbtn"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+          <span class="font-display font-extrabold text-base text-ink dark:text-white flex-1">Detail Temuan</span>
+          <button class="backbtn"><i data-lucide="more-vertical" class="w-5 h-5"></i></button>
+        </div>
+        <div class="px-5 space-y-4">
+          <div class="rounded-3xl p-4 text-white shadow-soft relative overflow-hidden" style="background:linear-gradient(120deg,#1F2937,#0f172a)">
+            <div class="absolute right-4 top-4"><span class="badge bg-warning/20 text-warning border border-warning/30">Minor NC</span></div>
+            <div class="text-[11px] font-mono text-white/60">IA-2026-033 / F-001</div>
+            <div class="font-display font-bold text-lg mt-1 leading-snug">Identifikasi bahaya resiko raw material belum tercantum</div>
+            <div class="flex items-center gap-4 mt-3 text-xs text-white/70">
+              <span class="flex items-center gap-1"><i data-lucide="hash" class="w-3.5 h-3.5"></i> Klausul 6.1</span>
+              <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> Due 31 Jul 2026</span>
+            </div>
+          </div>
+
+          <!-- approval stepper -->
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+            <div class="text-xs font-bold text-ink dark:text-white mb-3">Alur Verifikasi</div>
+            <div class="flex items-center">
+              <div class="stepDone">✓</div><div class="stepLine on"></div>
+              <div class="stepDone">✓</div><div class="stepLine on"></div>
+              <div class="stepDone">✓</div><div class="stepLine"></div>
+              <div class="stepNow">4</div>
+            </div>
+            <div class="flex justify-between text-[9px] font-semibold text-slate-400 mt-1.5"><span>Submit</span><span>Atasan</span><span>Auditor</span><span>Lead</span></div>
+          </div>
+
+          <!-- segmented tabs -->
+          <div class="seg"><button class="seg-on">Detail</button><button>Checklist</button><button>Evidence</button><button>History</button></div>
+
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 divide-y divide-line dark:divide-slate-700 shadow-card">
+            <div class="row"><span class="rowk"><i data-lucide="user" class="w-4 h-4"></i> PIC Auditee</span><span class="rowv">Fina Sabrina</span></div>
+            <div class="row"><span class="rowk"><i data-lucide="user-check" class="w-4 h-4"></i> Auditor</span><span class="rowv">Fatih B. Andhika</span></div>
+            <div class="row"><span class="rowk"><i data-lucide="alert-octagon" class="w-4 h-4"></i> Severity</span><span class="badge bg-warning/10 text-warning">Minor NC</span></div>
+            <div class="row"><span class="rowk"><i data-lucide="activity" class="w-4 h-4"></i> Risk Level</span><span class="badge bg-danger/10 text-danger">High</span></div>
+          </div>
+
+          <!-- root cause / action -->
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+            <div class="text-xs font-bold text-ink dark:text-white mb-2">Root Cause (5 Why)</div>
+            <ol class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 list-decimal pl-4">
+              <li>COPQ reporting belum terintegrasi jadi satu kalkulasi.</li>
+              <li>Format laporan belum mengakomodasi semua biaya lintas dept.</li>
+            </ol>
+          </div>
+
+          <!-- evidence -->
+          <div>
+            <div class="flex items-center justify-between mb-2"><div class="text-sm font-bold text-ink dark:text-white">Evidence Foto</div><button onclick="openSheet()" class="text-xs font-semibold text-primary flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4"></i> Kamera</button></div>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="aspect-square rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 grid place-items-center"><i data-lucide="image" class="w-6 h-6 text-white/70"></i></div>
+              <div class="aspect-square rounded-2xl bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-500 grid place-items-center"><i data-lucide="image" class="w-6 h-6 text-white/70"></i></div>
+              <button onclick="openSheet()" class="aspect-square rounded-2xl border-2 border-dashed border-line dark:border-slate-600 grid place-items-center text-slate-400 press"><i data-lucide="plus" class="w-6 h-6"></i></button>
+            </div>
+          </div>
+
+          <!-- voice + comment -->
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 shadow-card flex items-center gap-3">
+            <button class="w-11 h-11 rounded-2xl bg-primary/10 text-primary grid place-items-center press"><i data-lucide="mic" class="w-5 h-5"></i></button>
+            <div class="flex-1 flex items-center gap-0.5 h-8">
+              <span class="w-1 rounded bg-primary/40" style="height:30%"></span><span class="w-1 rounded bg-primary/60" style="height:70%"></span><span class="w-1 rounded bg-primary" style="height:100%"></span><span class="w-1 rounded bg-primary/60" style="height:50%"></span><span class="w-1 rounded bg-primary/40" style="height:80%"></span><span class="w-1 rounded bg-primary/30" style="height:40%"></span><span class="w-1 rounded bg-primary/50" style="height:65%"></span>
+            </div>
+            <span class="text-xs font-semibold text-slate-400">0:12</span>
+          </div>
+        </div>
+        <div class="px-5 py-4">
+          <button onclick="toast('Verifikasi terkirim ✓')" class="w-full h-12 rounded-2xl bg-primary text-white font-semibold shadow-soft press flex items-center justify-center gap-2"><i data-lucide="badge-check" class="w-5 h-5"></i> Verifikasi & Lanjut</button>
+        </div>
+      </section>
+
+      <!-- ========================================================= FINDING -->
+      <section class="screen hasNav" id="s-finding">
+        <div class="subhead flex items-center gap-2">
+          <button onclick="go('dashboard')" class="backbtn"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+          <span class="font-display font-extrabold text-lg text-ink dark:text-white flex-1">Finding</span>
+        </div>
+        <div class="px-5">
+          <div class="grid grid-cols-3 gap-2 mb-3">
+            <div class="rounded-2xl bg-danger/10 p-3 text-center"><div class="text-2xl font-extrabold font-display text-danger">5</div><div class="text-[10px] font-bold text-danger/80">MAJOR</div></div>
+            <div class="rounded-2xl bg-warning/10 p-3 text-center"><div class="text-2xl font-extrabold font-display text-warning">9</div><div class="text-[10px] font-bold text-warning/80">MINOR</div></div>
+            <div class="rounded-2xl bg-accent/10 p-3 text-center"><div class="text-2xl font-extrabold font-display text-accent">28</div><div class="text-[10px] font-bold text-accent/80">OFI</div></div>
+          </div>
+          <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1"><span class="chip chip-on">Semua</span><span class="chip">Open</span><span class="chip">In Progress</span><span class="chip">Overdue</span><span class="chip">Closed</span></div>
+        </div>
+        <div class="px-5 mt-3 space-y-3 stagger" id="findingList"></div>
+      </section>
+
+      <!-- ========================================================= DOCUMENTS -->
+      <section class="screen hasNav" id="s-documents">
+        <div class="subhead flex items-center gap-2">
+          <button onclick="go('dashboard')" class="backbtn"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+          <span class="font-display font-extrabold text-lg text-ink dark:text-white flex-1">ISO Document</span>
+          <div class="seg-mini"><button class="on" id="gvGrid"><i data-lucide="layout-grid" class="w-4 h-4"></i></button><button id="gvList"><i data-lucide="list" class="w-4 h-4"></i></button></div>
+        </div>
+        <div class="px-5">
+          <div class="flex items-center gap-2 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 px-3.5 h-11 shadow-card"><i data-lucide="search" class="w-4 h-4 text-slate-400"></i><input placeholder="Cari dokumen…" class="flex-1 bg-transparent text-sm outline-none"/></div>
+          <div class="mt-4 text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Folder</div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="press rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card"><div class="w-10 h-10 rounded-2xl bg-accent/10 grid place-items-center mb-3"><i data-lucide="folder" class="w-5 h-5 text-accent"></i></div><div class="font-semibold text-sm text-ink dark:text-white">SOP</div><div class="text-[11px] text-slate-400">48 dokumen</div></div>
+            <div class="press rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card"><div class="w-10 h-10 rounded-2xl bg-primary/10 grid place-items-center mb-3"><i data-lucide="folder" class="w-5 h-5 text-primary"></i></div><div class="font-semibold text-sm text-ink dark:text-white">Work Instruction</div><div class="text-[11px] text-slate-400">31 dokumen</div></div>
+            <div class="press rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card"><div class="w-10 h-10 rounded-2xl bg-success/10 grid place-items-center mb-3"><i data-lucide="folder" class="w-5 h-5 text-success"></i></div><div class="font-semibold text-sm text-ink dark:text-white">Form</div><div class="text-[11px] text-slate-400">64 dokumen</div></div>
+            <div class="press rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card"><div class="w-10 h-10 rounded-2xl bg-warning/10 grid place-items-center mb-3"><i data-lucide="folder" class="w-5 h-5 text-warning"></i></div><div class="font-semibold text-sm text-ink dark:text-white">Record</div><div class="text-[11px] text-slate-400">120 dokumen</div></div>
+          </div>
+          <div class="mt-5 text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Terbaru</div>
+          <div class="space-y-2.5" id="docList"></div>
+        </div>
+      </section>
+
+      <!-- ========================================================= NOTIFICATIONS -->
+      <section class="screen hasNav" id="s-notifications">
+        <div class="subhead flex items-center gap-2">
+          <button onclick="go('dashboard')" class="backbtn"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+          <span class="font-display font-extrabold text-lg text-ink dark:text-white flex-1">Notifikasi</span>
+          <button onclick="toast('Semua ditandai dibaca')" class="text-xs font-semibold text-primary">Tandai dibaca</button>
+        </div>
+        <div class="px-5"><div class="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1"><span class="chip chip-on">Semua</span><span class="chip">Belum dibaca</span><span class="chip">Approval</span><span class="chip">Reminder</span><span class="chip">Mention</span></div></div>
+        <div class="px-5 mt-3 space-y-4" id="notifList"></div>
+      </section>
+
+      <!-- ========================================================= REPORTS -->
+      <section class="screen hasNav" id="s-reports">
+        <div class="subhead flex items-center gap-2">
+          <button onclick="go('dashboard')" class="backbtn"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+          <span class="font-display font-extrabold text-lg text-ink dark:text-white flex-1">Analytics</span>
+          <button class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 grid place-items-center press"><i data-lucide="download" class="w-4 h-4 text-slate-500"></i></button>
+        </div>
+        <div class="px-5 space-y-4">
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+            <div class="flex items-center justify-between mb-1"><div class="text-sm font-bold text-ink dark:text-white">Tren Temuan 6 Bulan</div><span class="badge bg-success/10 text-success">-18%</span></div>
+            <div class="h-[160px]"><canvas id="chLine"></canvas></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card text-center">
+              <div class="relative w-24 h-24 mx-auto">
+                <svg viewBox="0 0 100 100" class="ring w-24 h-24"><circle cx="50" cy="50" r="42" fill="none" stroke="#E5E7EB" stroke-width="10"/><circle cx="50" cy="50" r="42" fill="none" stroke="#10B981" stroke-width="10" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="58"/></svg>
+                <div class="absolute inset-0 grid place-items-center"><div><div class="text-xl font-extrabold font-display text-ink dark:text-white">78%</div></div></div>
+              </div>
+              <div class="text-xs font-semibold text-slate-400 mt-2">Closure Rate</div>
+            </div>
+            <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+              <div class="text-xs font-bold text-ink dark:text-white mb-2">On-time %</div>
+              <div class="h-[96px]"><canvas id="chBar2"></canvas></div>
+            </div>
+          </div>
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+            <div class="text-sm font-bold text-ink dark:text-white mb-3">Peringkat Departemen</div>
+            <div class="space-y-3" id="deptRank"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= PROFILE -->
+      <section class="screen hasNav" id="s-profile">
+        <div class="subhead"><span class="font-display font-extrabold text-lg text-ink dark:text-white">Profil</span></div>
+        <div class="px-5 space-y-4">
+          <div class="rounded-3xl p-5 text-white shadow-soft relative overflow-hidden" style="background:linear-gradient(120deg,#C8102E,#7a0b1e)">
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-white/10"></div>
+            <div class="relative flex items-center gap-4">
+              <div class="w-16 h-16 rounded-3xl bg-white/15 border border-white/30 grid place-items-center text-2xl font-extrabold font-display">FS</div>
+              <div class="flex-1">
+                <div class="font-display font-extrabold text-lg">Fina Sabrina</div>
+                <div class="text-white/80 text-xs">Document Control · Quality Management</div>
+                <div class="text-white/60 text-[11px] mt-0.5 font-mono">EMP-2021-0087</div>
+              </div>
+            </div>
+            <div class="relative grid grid-cols-3 gap-2 mt-4 text-center">
+              <div class="rounded-2xl bg-white/10 py-2"><div class="text-lg font-extrabold font-display">92</div><div class="text-[10px] text-white/70">Audit Score</div></div>
+              <div class="rounded-2xl bg-white/10 py-2"><div class="text-lg font-extrabold font-display">34</div><div class="text-[10px] text-white/70">Selesai</div></div>
+              <div class="rounded-2xl bg-white/10 py-2"><div class="text-lg font-extrabold font-display">A+</div><div class="text-[10px] text-white/70">Grade</div></div>
+            </div>
+          </div>
+
+          <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
+            <div class="min-w-[92px] rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 text-center shadow-card"><div class="w-9 h-9 mx-auto rounded-xl bg-warning/10 grid place-items-center mb-1"><i data-lucide="award" class="w-5 h-5 text-warning"></i></div><div class="text-[10px] font-semibold text-slate-500">Top Auditor</div></div>
+            <div class="min-w-[92px] rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 text-center shadow-card"><div class="w-9 h-9 mx-auto rounded-xl bg-success/10 grid place-items-center mb-1"><i data-lucide="zap" class="w-5 h-5 text-success"></i></div><div class="text-[10px] font-semibold text-slate-500">Fast Close</div></div>
+            <div class="min-w-[92px] rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 text-center shadow-card"><div class="w-9 h-9 mx-auto rounded-xl bg-accent/10 grid place-items-center mb-1"><i data-lucide="target" class="w-5 h-5 text-accent"></i></div><div class="text-[10px] font-semibold text-slate-500">100% OnTime</div></div>
+          </div>
+
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 divide-y divide-line dark:divide-slate-700 shadow-card overflow-hidden" id="profileMenu"></div>
+          <button onclick="go('login')" class="w-full h-12 rounded-2xl bg-danger/10 text-danger font-semibold press flex items-center justify-center gap-2"><i data-lucide="log-out" class="w-5 h-5"></i> Keluar</button>
+          <div class="text-center text-[11px] text-slate-400 pb-2">QMS BONECOM TRICOM · v2.6.0</div>
+        </div>
+      </section>
+
+      <!-- ========================================================= SETTINGS -->
+      <section class="screen hasNav" id="s-settings">
+        <div class="subhead flex items-center gap-2"><button onclick="go('profile')" class="backbtn"><i data-lucide="chevron-left" class="w-5 h-5"></i></button><span class="font-display font-extrabold text-lg text-ink dark:text-white flex-1">Pengaturan</span></div>
+        <div class="px-5 space-y-4">
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 divide-y divide-line dark:divide-slate-700 shadow-card overflow-hidden">
+            <div class="row"><span class="rowk"><i data-lucide="moon-star" class="w-4 h-4"></i> Dark Mode</span><button onclick="toggleDark()" id="dmSwitch" class="w-11 h-6 rounded-full bg-slate-200 dark:bg-primary relative transition"><span class="absolute top-0.5 left-0.5 dark:left-[22px] w-5 h-5 rounded-full bg-white shadow transition-all"></span></button></div>
+            <div class="row press"><span class="rowk"><i data-lucide="languages" class="w-4 h-4"></i> Bahasa</span><span class="rowv text-slate-400">Indonesia ›</span></div>
+            <div class="row press"><span class="rowk"><i data-lucide="shield" class="w-4 h-4"></i> Keamanan</span><span class="rowv text-slate-400">›</span></div>
+            <div class="row press"><span class="rowk"><i data-lucide="bell" class="w-4 h-4"></i> Notifikasi</span><span class="rowv text-slate-400">›</span></div>
+          </div>
+          <div class="rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 divide-y divide-line dark:divide-slate-700 shadow-card overflow-hidden">
+            <div class="row press"><span class="rowk"><i data-lucide="circle-help" class="w-4 h-4"></i> Bantuan</span><span class="rowv text-slate-400">›</span></div>
+            <div class="row press"><span class="rowk"><i data-lucide="info" class="w-4 h-4"></i> Tentang Aplikasi</span><span class="rowv text-slate-400">v2.6.0</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAB -->
+      <button id="fab" class="fab press" onclick="fabAction()"><i data-lucide="plus" class="w-7 h-7"></i></button>
+
+      <!-- bottom nav -->
+      <nav class="bottomnav" id="bottomnav">
+        <button class="navbtn" data-nav="dashboard" onclick="go('dashboard')"><span class="navdot"></span><i data-lucide="layout-dashboard" class="w-5 h-5"></i>Home</button>
+        <button class="navbtn" data-nav="audit" onclick="go('audit')"><span class="navdot"></span><i data-lucide="shield-check" class="w-5 h-5"></i>Audit</button>
+        <button class="navbtn" data-nav="documents" onclick="go('documents')"><span class="navdot"></span><i data-lucide="folder" class="w-5 h-5"></i>Dokumen</button>
+        <button class="navbtn" data-nav="reports" onclick="go('reports')"><span class="navdot"></span><i data-lucide="pie-chart" class="w-5 h-5"></i>Laporan</button>
+        <button class="navbtn" data-nav="profile" onclick="go('profile')"><span class="navdot"></span><i data-lucide="user" class="w-5 h-5"></i>Profil</button>
+      </nav>
+
+      <!-- bottom sheet -->
+      <div class="sheetWrap" id="sheet">
+        <div class="sheetBg" onclick="closeSheet()"></div>
+        <div class="sheet">
+          <div class="w-10 h-1.5 rounded-full bg-line mx-auto my-3"></div>
+          <div class="font-display font-bold text-ink dark:text-white text-center mb-4">Tambah Evidence</div>
+          <div class="grid grid-cols-3 gap-3">
+            <button onclick="closeSheet();toast('Kamera dibuka')" class="rounded-2xl bg-canvas dark:bg-slate-800 p-4 grid place-items-center gap-2 press"><span class="w-12 h-12 rounded-2xl bg-primary/10 text-primary grid place-items-center"><i data-lucide="camera" class="w-6 h-6"></i></span><span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Kamera</span></button>
+            <button onclick="closeSheet();toast('Galeri dibuka')" class="rounded-2xl bg-canvas dark:bg-slate-800 p-4 grid place-items-center gap-2 press"><span class="w-12 h-12 rounded-2xl bg-accent/10 text-accent grid place-items-center"><i data-lucide="image" class="w-6 h-6"></i></span><span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Galeri</span></button>
+            <button onclick="closeSheet();toast('Rekam suara')" class="rounded-2xl bg-canvas dark:bg-slate-800 p-4 grid place-items-center gap-2 press"><span class="w-12 h-12 rounded-2xl bg-success/10 text-success grid place-items-center"><i data-lucide="mic" class="w-6 h-6"></i></span><span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Suara</span></button>
+          </div>
+          <button onclick="closeSheet()" class="w-full h-12 mt-5 rounded-2xl bg-slate-100 dark:bg-slate-800 font-semibold text-slate-500 press">Batal</button>
+        </div>
+      </div>
+
+      <!-- toast -->
+      <div class="toast" id="toast"><i data-lucide="check-circle-2" class="w-5 h-5 text-success"></i><span id="toastMsg">Tersimpan</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- more tailwind component classes -->
+<style>
+  .badge{ font-size:10px; font-weight:700; padding:3px 9px; border-radius:999px; }
+  .qm{ display:flex; flex-direction:column; align-items:center; gap:6px; font-size:11px; font-weight:600; color:#475569; }
+  html.dark .qm{ color:#cbd5e1; }
+  .qmi{ width:52px; height:52px; border-radius:18px; display:grid; place-items:center; }
+  .subhead{ position:sticky; top:0; z-index:20; padding:8px 20px 12px; background:rgba(248,250,252,.9); backdrop-filter:blur(10px); }
+  html.dark .subhead{ background:rgba(15,23,42,.85); }
+  .backbtn{ width:36px; height:36px; border-radius:12px; display:grid; place-items:center; color:#334155; background:#fff; border:1px solid #E5E7EB; }
+  html.dark .backbtn{ background:#1e293b; border-color:#334155; color:#cbd5e1; }
+  .chip{ flex:none; font-size:12px; font-weight:600; padding:7px 14px; border-radius:999px; background:#fff; border:1px solid #E5E7EB; color:#64748b; }
+  html.dark .chip{ background:#1e293b; border-color:#334155; color:#94a3b8; }
+  .chip-on{ background:#C8102E; border-color:#C8102E; color:#fff; }
+  .seg{ display:flex; background:#eef1f5; border-radius:16px; padding:4px; gap:2px; }
+  html.dark .seg{ background:#1e293b; }
+  .seg button{ flex:1; font-size:12px; font-weight:600; color:#64748b; padding:8px; border-radius:12px; }
+  .seg .seg-on{ background:#fff; color:#0f172a; box-shadow:0 2px 8px rgba(15,23,42,.08); }
+  html.dark .seg .seg-on{ background:#334155; color:#fff; }
+  .seg-mini{ display:flex; background:#eef1f5; border-radius:12px; padding:3px; }
+  html.dark .seg-mini{ background:#1e293b; }
+  .seg-mini button{ width:34px; height:30px; border-radius:9px; display:grid; place-items:center; color:#94a3b8; }
+  .seg-mini .on{ background:#fff; color:#C8102E; box-shadow:0 2px 6px rgba(15,23,42,.1); }
+  html.dark .seg-mini .on{ background:#334155; }
+  .row{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; }
+  .rowk{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:#475569; }
+  html.dark .rowk{ color:#cbd5e1; }
+  .rowv{ font-size:13px; font-weight:600; color:#0f172a; }
+  html.dark .rowv{ color:#fff; }
+  .stepDone{ width:26px; height:26px; border-radius:50%; background:#10B981; color:#fff; font-size:12px; font-weight:700; display:grid; place-items:center; flex:none; }
+  .stepNow{ width:26px; height:26px; border-radius:50%; background:#C8102E; color:#fff; font-size:12px; font-weight:700; display:grid; place-items:center; flex:none; box-shadow:0 0 0 4px rgba(200,16,46,.15); }
+  .stepLine{ flex:1; height:3px; background:#E5E7EB; margin:0 2px; border-radius:3px; }
+  .stepLine.on{ background:#10B981; }
+</style>
+
+<script>
+/* ---------------- data ---------------- */
+const MODULES = [
+  ['Audit', [['shield-check','Audit Internal','primary','audit'],['globe','Audit Eksternal','accent','audit'],['calendar-days','Audit Schedule','success','audit'],['list-checks','Checklist','warning','audit-detail']]],
+  ['Temuan & Tindakan', [['flag','Finding','danger','finding'],['wrench','Corrective Action','primary','audit-detail'],['shield','Preventive Action','accent','audit-detail'],['badge-check','Verification','success','audit-detail'],['stamp','Approval','warning','audit-detail']]],
+  ['Dokumen ISO', [['folder-open','Document Control','accent','documents'],['file-text','SOP','primary','documents'],['file-cog','Work Instruction','success','documents'],['clipboard-list','Form','warning','documents'],['archive','Record','accent','documents']]],
+  ['Master Data', [['building-2','Department','primary','modules'],['users','Employee','accent','modules'],['user-check','Auditor','success','modules'],['map-pin','Location','warning','modules'],['tag','Category','danger','modules'],['triangle-alert','Risk','primary','modules']]],
+  ['Lainnya', [['graduation-cap','Training','accent','modules'],['presentation','Management Review','primary','modules'],['calendar','Meeting','success','modules'],['bar-chart-3','Reports','warning','reports'],['user','User Profile','accent','profile'],['settings','Settings','primary','settings']]],
+];
+const AUDITS = [
+  ['IA-2026-033','Quality Management','Shared','success',78,'Apriyanto N.A','15 Jan'],
+  ['IA-2026-032','HR & General Affairs','Approved','accent',40,'Firman','19 Jan'],
+  ['IA-2026-031','Maintenance','Pending','warning',0,'Fina Sabrina','21 Jan'],
+  ['IA-2026-030','Purchasing','Closed','slate',100,'Ardi Asnawi','12 Jan'],
+];
+const FINDINGS = [
+  ['IA-2026-033/F-001','Minor NC','warning','Identifikasi bahaya resiko raw material belum tercantum','Fina Sabrina','Open','31 Jul'],
+  ['IA-2026-032/F-002','Major NC','danger','Bukti pelaksanaan training belum terarsip','Mrs. Siti','In Progress','20 Mar'],
+  ['IA-2026-031/F-003','OFI','accent','Saran identitas molding after market','Mr. Afif','Closed','19 Mar'],
+];
+const DOCS = [
+  ['SOP-PRD-014','Prosedur Produksi Injection','Rev.3','Approved','success'],
+  ['WI-QC-008','Inspeksi Incoming Material','Rev.2','Review','warning'],
+  ['FM-BDK-011','Audit Finding (PFI)','Rev.1','Approved','success'],
+];
+const NOTIFS = [
+  ['Hari ini', [['stamp','Perlu persetujuan Anda','CAPA IA-2026-033/F-001 menunggu approval atasan.','5 mnt','primary',true],['badge-check','Diverifikasi auditor','F-004 diverifikasi Fatih B.A.','2 jam','accent',true]]],
+  ['Kemarin', [['clock','Reminder due date','F-002 jatuh tempo dalam 3 hari.','1 hr','warning',false],['message-square','Anda disebut','Apriyanto menyebut Anda pada komentar F-001.','1 hr','success',false]]],
+  ['Minggu ini', [['check-circle-2','Temuan closed','IA-2026-031/F-003 telah ditutup.','3 hr','success',false]]],
+];
+const PROFILE_MENU = [['user-cog','Edit Profil'],['bell','Notifikasi'],['shield','Keamanan & Password'],['languages','Bahasa'],['settings','Pengaturan','settings'],['circle-help','Bantuan & Dukungan']];
+const DEPTS = [['Quality',92,'success'],['Production',84,'accent'],['HR & GA',71,'warning'],['Purchasing',65,'primary']];
+
+/* ---------------- render helpers ---------------- */
+const el = (h)=>{ const t=document.createElement('template'); t.innerHTML=h.trim(); return t.content.firstChild; };
+function color(c){ return {primary:'#C8102E',accent:'#2563EB',success:'#10B981',warning:'#F59E0B',danger:'#EF4444',slate:'#94a3b8'}[c]||c; }
+
+function renderModules(){
+  const b=document.getElementById('modulesBody'); b.innerHTML='';
+  MODULES.forEach(([grp,items])=>{
+    const wrap=el(`<div><div class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">${grp}</div><div class="grid grid-cols-2 gap-3"></div></div>`);
+    const g=wrap.querySelector('.grid');
+    items.forEach(([ic,name,c,to])=>{
+      g.appendChild(el(`<button onclick="go('${to}')" class="press flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 shadow-card text-left">
+        <span class="w-10 h-10 rounded-xl grid place-items-center" style="background:${color(c)}1a;color:${color(c)}"><i data-lucide="${ic}" class="w-5 h-5"></i></span>
+        <span class="text-sm font-semibold text-ink dark:text-white">${name}</span></button>`));
+    });
+    b.appendChild(wrap);
+  });
+}
+function renderAudits(){
+  const b=document.getElementById('auditList'); b.innerHTML='';
+  AUDITS.forEach(([code,dept,st,c,prog,lead,date])=>{
+    b.appendChild(el(`<div onclick="go('audit-detail')" class="press rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card">
+      <div class="flex items-start justify-between"><div><div class="text-[11px] font-mono text-slate-400">${code}</div><div class="font-semibold text-ink dark:text-white mt-0.5">${dept}</div></div><span class="badge" style="background:${color(c)}1a;color:${color(c)}">${st}</span></div>
+      <div class="mt-3 h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><div class="h-full rounded-full" style="width:${prog}%;background:${color(c)}"></div></div>
+      <div class="flex items-center justify-between mt-2.5"><div class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-primary/10 text-primary text-[10px] font-bold grid place-items-center">${lead.split(' ').map(x=>x[0]).slice(0,2).join('')}</span><span class="text-[11px] text-slate-400 font-semibold">${lead}</span></div><span class="text-[11px] text-slate-400 flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i>${date}</span></div></div>`));
+  });
+  lucide.createIcons();
+}
+function renderFindings(){
+  const b=document.getElementById('findingList'); b.innerHTML='';
+  const stc={'Open':'warning','In Progress':'accent','Closed':'success'};
+  FINDINGS.forEach(([code,sev,c,desc,pic,st,due])=>{
+    b.appendChild(el(`<div onclick="go('audit-detail')" class="press rounded-3xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-4 shadow-card border-l-4" style="border-left-color:${color(c)}">
+      <div class="flex items-center justify-between"><span class="badge" style="background:${color(c)}1a;color:${color(c)}">${sev}</span><span class="text-[10px] font-mono text-slate-400">${code}</span></div>
+      <div class="text-sm font-semibold text-ink dark:text-white mt-2 leading-snug">${desc}</div>
+      <div class="flex items-center justify-between mt-3"><span class="text-[11px] text-slate-400 flex items-center gap-1.5"><i data-lucide="user" class="w-3.5 h-3.5"></i>${pic}</span><div class="flex items-center gap-2"><span class="badge" style="background:${color(stc[st])}1a;color:${color(stc[st])}">${st}</span><span class="text-[11px] text-slate-400 flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i>${due}</span></div></div></div>`));
+  });
+  lucide.createIcons();
+}
+function renderDocs(){
+  const b=document.getElementById('docList'); b.innerHTML='';
+  DOCS.forEach(([code,name,rev,st,c])=>{
+    b.appendChild(el(`<div class="press flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3 shadow-card">
+      <div class="w-11 h-11 rounded-2xl bg-danger/10 grid place-items-center text-danger"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+      <div class="flex-1 min-w-0"><div class="font-semibold text-sm text-ink dark:text-white truncate">${name}</div><div class="text-[11px] text-slate-400 font-mono">${code} · ${rev}</div></div>
+      <span class="badge" style="background:${color(c)}1a;color:${color(c)}">${st}</span><i data-lucide="star" class="w-4 h-4 text-slate-300"></i></div>`));
+  });
+  lucide.createIcons();
+}
+function renderNotifs(){
+  const b=document.getElementById('notifList'); b.innerHTML='';
+  NOTIFS.forEach(([grp,items])=>{
+    const wrap=el(`<div><div class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">${grp}</div><div class="space-y-2.5"></div></div>`);
+    const g=wrap.querySelector('div.space-y-2\\.5');
+    items.forEach(([ic,title,desc,time,c,unread])=>{
+      g.appendChild(el(`<div class="press relative flex items-start gap-3 rounded-2xl bg-white dark:bg-slate-800 border border-line dark:border-slate-700 p-3.5 shadow-card">
+        ${unread?'<span class="absolute top-3.5 right-3.5 w-2 h-2 rounded-full bg-primary"></span>':''}
+        <span class="w-10 h-10 rounded-xl grid place-items-center flex-none" style="background:${color(c)}1a;color:${color(c)}"><i data-lucide="${ic}" class="w-5 h-5"></i></span>
+        <div class="min-w-0 flex-1"><div class="text-sm font-semibold text-ink dark:text-white">${title}</div><div class="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">${desc}</div><div class="text-[10px] text-slate-400 mt-1">${time} lalu</div></div></div>`));
+    });
+    b.appendChild(wrap);
+  });
+  lucide.createIcons();
+}
+function renderProfileMenu(){
+  const b=document.getElementById('profileMenu'); b.innerHTML='';
+  PROFILE_MENU.forEach(([ic,name,to])=>{
+    b.appendChild(el(`<div onclick="${to?`go('${to}')`:''}" class="row press"><span class="rowk"><i data-lucide="${ic}" class="w-4 h-4"></i> ${name}</span><i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i></div>`));
+  });
+  lucide.createIcons();
+}
+function renderDeptRank(){
+  const b=document.getElementById('deptRank'); b.innerHTML='';
+  DEPTS.forEach(([n,v,c])=>{
+    b.appendChild(el(`<div><div class="flex justify-between text-xs font-semibold mb-1"><span class="text-slate-600 dark:text-slate-300">${n}</span><span class="text-slate-400">${v}%</span></div><div class="h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><div class="h-full rounded-full" style="width:${v}%;background:${color(c)}"></div></div></div>`));
+  });
+}
+function renderRail(){
+  const items=[['splash','Splash','sparkles'],['login','Login','log-in'],['dashboard','Dashboard','layout-dashboard'],['modules','Semua Modul','grid-3x3'],['audit','Audit Internal','shield-check'],['audit-detail','Audit / Finding Detail','file-search'],['finding','Finding','flag'],['documents','ISO Document','folder'],['notifications','Notifikasi','bell'],['reports','Analytics','pie-chart'],['profile','Profil','user'],['settings','Pengaturan','settings']];
+  const b=document.getElementById('rail'); b.innerHTML='';
+  items.forEach(([id,name,ic])=>{ b.appendChild(el(`<button class="railbtn" data-rail="${id}" onclick="go('${id}')"><i data-lucide="${ic}" class="w-4 h-4"></i>${name}</button>`)); });
+}
+
+/* ---------------- router ---------------- */
+let current='splash';
+const NAV_SCREENS=['dashboard','audit','documents','reports','profile'];
+function go(id){
+  current=id;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const s=document.getElementById('s-'+id); if(!s) return; s.classList.add('active'); s.scrollTop=0;
+  const app = !['splash','login'].includes(id);
+  document.getElementById('bottomnav').classList.toggle('show', app);
+  document.getElementById('fab').style.display = ['audit','finding','documents'].includes(id) ? 'flex':'none';
+  // active nav
+  document.querySelectorAll('.navbtn').forEach(n=>n.classList.toggle('on', n.dataset.nav===id));
+  document.querySelectorAll('.railbtn').forEach(n=>n.classList.toggle('on', n.dataset.rail===id));
+  lucide.createIcons();
+  if(app) animateCounters(s);
+}
+/* ---------------- interactions ---------------- */
+function toggleDark(){ document.documentElement.classList.toggle('dark'); rebuildCharts(); lucide.createIcons(); }
+function openSheet(){ document.getElementById('sheet').classList.add('open'); }
+function closeSheet(){ document.getElementById('sheet').classList.remove('open'); }
+let toastT; function toast(msg){ const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+function fabAction(){
+  if(current==='documents') toast('Upload dokumen baru');
+  else if(current==='finding') toast('Tambah temuan baru');
+  else toast('Jadwal audit baru');
+}
+function animateCounters(scope){ scope.querySelectorAll('.counter').forEach(c=>{ const to=+c.dataset.to; let n=0; const step=Math.max(1,Math.round(to/28)); clearInterval(c._i); c._i=setInterval(()=>{ n+=step; if(n>=to){n=to; clearInterval(c._i);} c.textContent=n; },26); }); }
+
+/* ---------------- charts ---------------- */
+let charts={};
+function dark(){ return document.documentElement.classList.contains('dark'); }
+function grid(){ return dark()?'#334155':'#eef1f5'; }
+function tick(){ return dark()?'#94a3b8':'#94a3b8'; }
+function mkCharts(){
+  Chart.defaults.font.family="Inter"; Chart.defaults.font.size=10; Chart.defaults.plugins.legend.display=false;
+  charts.donut=new Chart(document.getElementById('chDonut'),{type:'doughnut',data:{labels:['Major','Minor','OFI'],datasets:[{data:[5,9,28],backgroundColor:['#EF4444','#F59E0B','#2563EB'],borderWidth:0}]},options:{cutout:'72%',plugins:{tooltip:{enabled:true}}}});
+  charts.bar=new Chart(document.getElementById('chBar'),{type:'bar',data:{labels:['QM','PRD','HR','PUR','MTN'],datasets:[{data:[9,7,5,4,6],backgroundColor:'#C8102E',borderRadius:6,barPercentage:.6}]},options:{scales:{x:{grid:{display:false},ticks:{color:tick()}},y:{grid:{color:grid()},ticks:{color:tick(),stepSize:5},border:{display:false}}}}});
+  charts.line=new Chart(document.getElementById('chLine'),{type:'line',data:{labels:['Ags','Sep','Okt','Nov','Des','Jan'],datasets:[{data:[24,20,22,17,15,14],borderColor:'#C8102E',backgroundColor:'rgba(200,16,46,.12)',fill:true,tension:.4,pointRadius:0,borderWidth:3}]},options:{scales:{x:{grid:{display:false},ticks:{color:tick()}},y:{grid:{color:grid()},ticks:{color:tick()},border:{display:false}}}}});
+  charts.bar2=new Chart(document.getElementById('chBar2'),{type:'bar',data:{labels:['Q','P','H','Pu'],datasets:[{data:[92,84,71,65],backgroundColor:['#10B981','#2563EB','#F59E0B','#C8102E'],borderRadius:6,barPercentage:.6}]},options:{scales:{x:{grid:{display:false},ticks:{color:tick()}},y:{display:false,max:100}}}});
+}
+function rebuildCharts(){ Object.values(charts).forEach(c=>c&&c.destroy()); charts={}; mkCharts(); }
+
+/* ---------------- init ---------------- */
+function clock(){ const d=new Date(); document.getElementById('clock').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+renderRail(); renderModules(); renderAudits(); renderFindings(); renderDocs(); renderNotifs(); renderProfileMenu(); renderDeptRank();
+lucide.createIcons(); mkCharts(); clock(); setInterval(clock,10000);
+document.getElementById('fab').style.display='none';
+document.querySelector('[data-rail="splash"]').classList.add('on');
+setTimeout(()=>go('login'), 2200);
+/* doc grid/list toggle */
+document.getElementById('gvGrid').onclick=function(){ this.classList.add('on'); document.getElementById('gvList').classList.remove('on'); };
+document.getElementById('gvList').onclick=function(){ this.classList.add('on'); document.getElementById('gvGrid').classList.remove('on'); };
+</script>
+</body>
+</html>

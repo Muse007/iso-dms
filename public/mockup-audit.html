@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="id" class="bg-slate-50">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mockup — Internal Audit System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: { DEFAULT: '#b91c1c', dark: '#7f1d1d', soft: '#fee2e2' },
+        },
+        fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+      },
+    },
+  };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root { font-family: 'Inter', ui-sans-serif, system-ui; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .nav-link.active { background:#fee2e2; color:#7f1d1d; font-weight:600; }
+  .badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
+  .section { display:none; }
+  .section.active { display:block; }
+  .timeline-dot { width:10px; height:10px; border-radius:999px; }
+  details > summary { list-style: none; cursor:pointer; }
+  details > summary::-webkit-details-marker { display:none; }
+</style>
+</head>
+<body class="min-h-screen text-slate-800">
+<!-- ===================== TOP HEADER ===================== -->
+<header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
+  <div class="flex items-center justify-between px-5 py-3">
+    <div class="flex items-center gap-3">
+      <div class="size-8 rounded bg-brand text-white grid place-items-center font-bold">BTI</div>
+      <div>
+        <div class="text-sm font-semibold leading-tight">Internal Audit System</div>
+        <div class="text-[11px] text-slate-500 leading-tight">Mockup · ISO 19011 · Plan → Execute → Close</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 text-xs">
+      <span class="badge bg-amber-100 text-amber-700"><i data-lucide="flask-conical" class="size-3"></i> MOCKUP MODE</span>
+      <span class="text-slate-400">Bukan halaman production · Hanya konsep visual</span>
+    </div>
+  </div>
+</header>
+
+<div class="flex">
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="w-64 shrink-0 border-r border-slate-200 bg-white min-h-[calc(100vh-57px)] p-3">
+    <div class="text-[11px] uppercase tracking-wider font-semibold text-slate-400 px-2 mb-2">Document Control</div>
+    <nav class="space-y-0.5 text-sm mb-4">
+      <a href="#dashboard-dc" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="dashboard-dc"><i data-lucide="layout-dashboard" class="size-4"></i> Dashboard DC</a>
+      <a href="#schedule-create" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="schedule-create"><i data-lucide="calendar-plus" class="size-4"></i> Buat Jadwal Audit</a>
+      <a href="#schedule-list" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="schedule-list"><i data-lucide="calendar-days" class="size-4"></i> Daftar Audit</a>
+      <a href="#email-preview" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="email-preview"><i data-lucide="mail" class="size-4"></i> Preview Email</a>
+    </nav>
+
+    <div class="text-[11px] uppercase tracking-wider font-semibold text-slate-400 px-2 mb-2">Pelaksanaan</div>
+    <nav class="space-y-0.5 text-sm mb-4">
+      <a href="#audit-execute" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="audit-execute"><i data-lucide="clipboard-check" class="size-4"></i> Pelaksanaan Audit</a>
+      <a href="#finding-detail" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="finding-detail"><i data-lucide="alert-triangle" class="size-4"></i> Detail Temuan</a>
+    </nav>
+
+    <div class="text-[11px] uppercase tracking-wider font-semibold text-slate-400 px-2 mb-2">Auditee · Atasan · Lead</div>
+    <nav class="space-y-0.5 text-sm mb-4">
+      <a href="#auditee-action" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="auditee-action"><i data-lucide="wrench" class="size-4"></i> Corrective Action</a>
+      <a href="#approval-atasan" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="approval-atasan"><i data-lucide="user-check" class="size-4"></i> Approval Atasan</a>
+      <a href="#verify-lead" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="verify-lead"><i data-lucide="badge-check" class="size-4"></i> Verifikasi Lead</a>
+    </nav>
+
+    <div class="text-[11px] uppercase tracking-wider font-semibold text-slate-400 px-2 mb-2">Monitor & Report</div>
+    <nav class="space-y-0.5 text-sm">
+      <a href="#reminders" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="reminders"><i data-lucide="bell-ring" class="size-4"></i> Reminder Center</a>
+      <a href="#matrix" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="matrix"><i data-lucide="grid-3x3" class="size-4"></i> Matrix Temuan</a>
+      <a href="#flow" class="nav-link flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100" data-section="flow"><i data-lucide="git-branch" class="size-4"></i> Status Flow</a>
+    </nav>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="flex-1 p-6 max-w-[1400px]">
+
+    <!-- ============== 1. DASHBOARD DC ============== -->
+    <section id="dashboard-dc" class="section">
+      <h1 class="text-2xl font-bold mb-1">Dashboard Document Control</h1>
+      <p class="text-sm text-slate-500 mb-5">Ringkasan audit periode Juni 2026</p>
+
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-500 font-medium">Audit Bulan Ini</div>
+            <i data-lucide="calendar-check" class="size-4 text-slate-400"></i>
+          </div>
+          <div class="text-3xl font-bold mt-2">12</div>
+          <div class="text-xs text-slate-400 mt-1">+3 dari bulan lalu</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-500 font-medium">Audit Overdue</div>
+            <i data-lucide="clock-alert" class="size-4 text-red-500"></i>
+          </div>
+          <div class="text-3xl font-bold mt-2 text-red-600">3</div>
+          <div class="text-xs text-red-500 mt-1">Perlu eskalasi</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-500 font-medium">Temuan Open</div>
+            <i data-lucide="alert-circle" class="size-4 text-amber-500"></i>
+          </div>
+          <div class="text-3xl font-bold mt-2">28</div>
+          <div class="text-xs text-slate-400 mt-1">8 menunggu approval</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-500 font-medium">Temuan Closed</div>
+            <i data-lucide="check-circle-2" class="size-4 text-emerald-500"></i>
+          </div>
+          <div class="text-3xl font-bold mt-2 text-emerald-600">52</div>
+          <div class="text-xs text-slate-400 mt-1">YTD 2026</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-2 bg-white border border-slate-200 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="font-semibold text-sm">Distribusi Temuan per Kategori</div>
+            <div class="flex gap-3 text-xs">
+              <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-emerald-500"></span> PFI</span>
+              <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-amber-500"></span> Minor</span>
+              <span class="flex items-center gap-1"><span class="size-2 rounded-full bg-red-600"></span> Major</span>
+            </div>
+          </div>
+          <!-- fake bar chart -->
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Produksi</span><span>14</span></div>
+              <div class="flex h-6 rounded overflow-hidden bg-slate-100">
+                <div class="bg-emerald-500" style="width:30%"></div>
+                <div class="bg-amber-500" style="width:50%"></div>
+                <div class="bg-red-600" style="width:20%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Warehouse</span><span>9</span></div>
+              <div class="flex h-6 rounded overflow-hidden bg-slate-100">
+                <div class="bg-emerald-500" style="width:45%"></div>
+                <div class="bg-amber-500" style="width:40%"></div>
+                <div class="bg-red-600" style="width:15%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-slate-500 mb-1"><span>QC</span><span>11</span></div>
+              <div class="flex h-6 rounded overflow-hidden bg-slate-100">
+                <div class="bg-emerald-500" style="width:25%"></div>
+                <div class="bg-amber-500" style="width:55%"></div>
+                <div class="bg-red-600" style="width:20%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-slate-500 mb-1"><span>HR</span><span>5</span></div>
+              <div class="flex h-6 rounded overflow-hidden bg-slate-100">
+                <div class="bg-emerald-500" style="width:60%"></div>
+                <div class="bg-amber-500" style="width:30%"></div>
+                <div class="bg-red-600" style="width:10%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-slate-500 mb-1"><span>IT</span><span>3</span></div>
+              <div class="flex h-6 rounded overflow-hidden bg-slate-100">
+                <div class="bg-emerald-500" style="width:70%"></div>
+                <div class="bg-amber-500" style="width:20%"></div>
+                <div class="bg-red-600" style="width:10%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="font-semibold text-sm mb-3">Status Audit</div>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center justify-between"><span class="flex items-center gap-2"><span class="timeline-dot bg-slate-400"></span> Scheduled</span><span class="font-mono">4</span></div>
+            <div class="flex items-center justify-between"><span class="flex items-center gap-2"><span class="timeline-dot bg-blue-500"></span> In Progress</span><span class="font-mono">3</span></div>
+            <div class="flex items-center justify-between"><span class="flex items-center gap-2"><span class="timeline-dot bg-amber-500"></span> Reporting</span><span class="font-mono">2</span></div>
+            <div class="flex items-center justify-between"><span class="flex items-center gap-2"><span class="timeline-dot bg-emerald-500"></span> Closed</span><span class="font-mono">3</span></div>
+          </div>
+          <div class="border-t mt-4 pt-3">
+            <div class="text-xs text-slate-500 mb-2">Top Auditor</div>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center justify-between"><span>Budi S.</span><span class="badge bg-slate-100 text-slate-600">5 audit</span></div>
+              <div class="flex items-center justify-between"><span>Rani P.</span><span class="badge bg-slate-100 text-slate-600">4 audit</span></div>
+              <div class="flex items-center justify-between"><span>Ahmad T.</span><span class="badge bg-slate-100 text-slate-600">3 audit</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-lg">
+        <div class="px-4 py-3 border-b flex items-center justify-between">
+          <div class="font-semibold text-sm">Audit Terjadwal Minggu Ini</div>
+          <a href="#schedule-create" class="text-xs text-brand font-semibold hover:underline">+ Buat Jadwal</a>
+        </div>
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50">
+            <tr>
+              <th class="px-4 py-2 text-left">Kode</th>
+              <th class="px-4 py-2 text-left">Departemen</th>
+              <th class="px-4 py-2 text-left">Lead Auditor</th>
+              <th class="px-4 py-2 text-left">Tanggal</th>
+              <th class="px-4 py-2 text-left">Standar</th>
+              <th class="px-4 py-2 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">IA-2026-014</td><td class="px-4 py-2">Produksi</td><td class="px-4 py-2">Budi Santoso</td><td class="px-4 py-2 mono text-xs">10 Jun 2026</td><td class="px-4 py-2 text-xs">ISO 9001</td><td class="px-4 py-2"><span class="badge bg-blue-100 text-blue-700">Scheduled</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">IA-2026-015</td><td class="px-4 py-2">Warehouse</td><td class="px-4 py-2">Rani Putri</td><td class="px-4 py-2 mono text-xs">12 Jun 2026</td><td class="px-4 py-2 text-xs">ISO 9001</td><td class="px-4 py-2"><span class="badge bg-blue-100 text-blue-700">Scheduled</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">IA-2026-016</td><td class="px-4 py-2">QC Lab</td><td class="px-4 py-2">Ahmad T.</td><td class="px-4 py-2 mono text-xs">14 Jun 2026</td><td class="px-4 py-2 text-xs">ISO 17025</td><td class="px-4 py-2"><span class="badge bg-amber-100 text-amber-700">Pending Notif</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">IA-2026-013</td><td class="px-4 py-2">HR</td><td class="px-4 py-2">Sari M.</td><td class="px-4 py-2 mono text-xs">5 Jun 2026</td><td class="px-4 py-2 text-xs">ISO 9001</td><td class="px-4 py-2"><span class="badge bg-red-100 text-red-700">Overdue Report</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== 2. SCHEDULE CREATE ============== -->
+    <section id="schedule-create" class="section">
+      <h1 class="text-2xl font-bold mb-1">Buat Jadwal Audit</h1>
+      <p class="text-sm text-slate-500 mb-5">Hanya Document Control yang dapat membuat schedule. Email H-7 dikirim otomatis ke auditee + CC atasan.</p>
+
+      <div class="grid grid-cols-3 gap-5">
+        <div class="col-span-2 bg-white border border-slate-200 rounded-lg p-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-medium text-slate-600">Kode Audit</label>
+              <input class="mt-1 w-full border border-slate-300 rounded px-3 py-2 mono text-xs bg-slate-50" value="IA-2026-017 (auto)" readonly />
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-600">Standar Audit</label>
+              <select class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm">
+                <option>ISO 9001:2015</option>
+                <option>ISO 14001:2015</option>
+                <option>ISO 17025:2017</option>
+                <option>ISO 45001:2018</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-xs font-medium text-slate-600">Departemen Diaudit</label>
+              <select class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm">
+                <option>Produksi</option><option>Warehouse</option><option>QC</option><option>HR</option><option>IT</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-600">Lokasi</label>
+              <input class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm" value="Plant 1 — Line A" />
+            </div>
+
+            <div>
+              <label class="text-xs font-medium text-slate-600">Tanggal Mulai</label>
+              <input type="date" class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm" value="2026-06-10" />
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-600">Tanggal Selesai</label>
+              <input type="date" class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm" value="2026-06-10" />
+            </div>
+
+            <div>
+              <label class="text-xs font-medium text-slate-600">Lead Auditor</label>
+              <select class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm">
+                <option>Budi Santoso (QA Manager)</option>
+                <option>Rani Putri</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-600">Auditor (multi)</label>
+              <div class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm flex flex-wrap gap-1 min-h-[38px]">
+                <span class="badge bg-slate-100 text-slate-700">Dewi K. ×</span>
+                <span class="badge bg-slate-100 text-slate-700">Hadi P. ×</span>
+                <span class="text-slate-400 text-xs">+ tambah</span>
+              </div>
+            </div>
+
+            <div class="col-span-2">
+              <label class="text-xs font-medium text-slate-600">Auditee (PIC departemen) — multi</label>
+              <div class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm flex flex-wrap gap-1 min-h-[38px]">
+                <span class="badge bg-blue-100 text-blue-700">Pak Joko (Spv Produksi) ×</span>
+                <span class="badge bg-blue-100 text-blue-700">Bu Lina (Admin Produksi) ×</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Sistem akan otomatis include atasan masing-masing sebagai CC.</p>
+            </div>
+
+            <div class="col-span-2">
+              <label class="text-xs font-medium text-slate-600">Scope / Klausul yang Diaudit</label>
+              <textarea rows="3" class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm">Klausul 7.1 (Sumber daya), 8.5 (Produksi & layanan), 9.1 (Monitoring)</textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center mt-5 pt-4 border-t">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked class="rounded" />
+              <span>Kirim email notifikasi H-7 (otomatis)</span>
+            </label>
+            <div class="flex gap-2">
+              <button class="px-4 py-2 text-sm border border-slate-300 rounded hover:bg-slate-50">Simpan Draft</button>
+              <button class="px-4 py-2 text-sm bg-brand text-white rounded hover:bg-brand-dark font-semibold">Submit & Kirim Notifikasi</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div class="flex gap-2 mb-2">
+              <i data-lucide="info" class="size-4 text-amber-600"></i>
+              <span class="font-semibold text-sm text-amber-800">Aturan Otomatis</span>
+            </div>
+            <ul class="text-xs text-amber-900 space-y-1 list-disc pl-4">
+              <li>Email H-7 wajib (tidak bisa di-skip).</li>
+              <li>CC atasan diambil dari struktur organisasi user.</li>
+              <li>Kode audit di-generate otomatis: <span class="mono">IA-YYYY-XXX</span>.</li>
+              <li>Lead Auditor tidak boleh dari departemen yang diaudit.</li>
+            </ul>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg p-4">
+            <div class="text-sm font-semibold mb-2">Preview Penerima Email</div>
+            <div class="text-xs space-y-1">
+              <div><span class="text-slate-500">TO:</span> joko@bti.id, lina@bti.id</div>
+              <div><span class="text-slate-500">CC:</span> manager-prod@bti.id, qa-head@bti.id</div>
+              <div><span class="text-slate-500">BCC:</span> doc-control@bti.id</div>
+            </div>
+            <a href="#email-preview" class="text-xs text-brand mt-2 inline-block hover:underline">Lihat template email →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 3. SCHEDULE LIST ============== -->
+    <section id="schedule-list" class="section">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h1 class="text-2xl font-bold mb-1">Daftar Audit</h1>
+          <p class="text-sm text-slate-500">Semua schedule audit · filter & pencarian</p>
+        </div>
+        <button class="px-4 py-2 text-sm bg-brand text-white rounded hover:bg-brand-dark font-semibold flex items-center gap-2"><i data-lucide="plus" class="size-4"></i> Jadwal Baru</button>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-lg p-3 mb-3 flex gap-2 text-sm">
+        <input placeholder="Cari kode / departemen…" class="flex-1 border border-slate-300 rounded px-3 py-1.5 text-sm" />
+        <select class="border border-slate-300 rounded px-2 py-1.5 text-sm"><option>Semua Standar</option></select>
+        <select class="border border-slate-300 rounded px-2 py-1.5 text-sm"><option>Semua Status</option></select>
+        <input type="date" class="border border-slate-300 rounded px-2 py-1.5 text-sm" />
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50">
+            <tr>
+              <th class="px-4 py-2.5 text-left">Kode</th>
+              <th class="px-4 py-2.5 text-left">Departemen</th>
+              <th class="px-4 py-2.5 text-left">Lead</th>
+              <th class="px-4 py-2.5 text-left">Tanggal</th>
+              <th class="px-4 py-2.5 text-left">Standar</th>
+              <th class="px-4 py-2.5 text-center">Temuan</th>
+              <th class="px-4 py-2.5 text-left">Status</th>
+              <th class="px-4 py-2.5"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 mono text-xs">IA-2026-014</td><td class="px-4 py-3">Produksi</td><td class="px-4 py-3 text-xs">Budi S.</td><td class="px-4 py-3 mono text-xs">10 Jun 2026</td><td class="px-4 py-3 text-xs">ISO 9001</td><td class="px-4 py-3 text-center text-xs"><span class="badge bg-emerald-100 text-emerald-700">2 PFI</span> <span class="badge bg-amber-100 text-amber-700">3 Min</span> <span class="badge bg-red-100 text-red-700">1 Maj</span></td><td class="px-4 py-3"><span class="badge bg-blue-100 text-blue-700">In Progress</span></td><td class="px-4 py-3 text-right"><a href="#audit-execute" class="text-brand text-xs font-semibold hover:underline">Buka →</a></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 mono text-xs">IA-2026-013</td><td class="px-4 py-3">HR</td><td class="px-4 py-3 text-xs">Sari M.</td><td class="px-4 py-3 mono text-xs">5 Jun 2026</td><td class="px-4 py-3 text-xs">ISO 9001</td><td class="px-4 py-3 text-center text-xs"><span class="badge bg-emerald-100 text-emerald-700">1 PFI</span> <span class="badge bg-amber-100 text-amber-700">2 Min</span></td><td class="px-4 py-3"><span class="badge bg-red-100 text-red-700">Overdue Report</span></td><td class="px-4 py-3 text-right"><a href="#" class="text-brand text-xs font-semibold hover:underline">Buka →</a></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 mono text-xs">IA-2026-012</td><td class="px-4 py-3">Warehouse</td><td class="px-4 py-3 text-xs">Rani P.</td><td class="px-4 py-3 mono text-xs">28 Mei 2026</td><td class="px-4 py-3 text-xs">ISO 9001</td><td class="px-4 py-3 text-center text-xs"><span class="badge bg-emerald-100 text-emerald-700">3 PFI</span> <span class="badge bg-amber-100 text-amber-700">1 Min</span></td><td class="px-4 py-3"><span class="badge bg-emerald-100 text-emerald-700">Closed</span></td><td class="px-4 py-3 text-right"><a href="#" class="text-brand text-xs font-semibold hover:underline">Buka →</a></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 mono text-xs">IA-2026-011</td><td class="px-4 py-3">QC</td><td class="px-4 py-3 text-xs">Ahmad T.</td><td class="px-4 py-3 mono text-xs">20 Mei 2026</td><td class="px-4 py-3 text-xs">ISO 17025</td><td class="px-4 py-3 text-center text-xs">—</td><td class="px-4 py-3"><span class="badge bg-emerald-100 text-emerald-700">Closed</span></td><td class="px-4 py-3 text-right"><a href="#" class="text-brand text-xs font-semibold hover:underline">Buka →</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== 4. EMAIL PREVIEW ============== -->
+    <section id="email-preview" class="section">
+      <h1 class="text-2xl font-bold mb-1">Preview Email Notifikasi</h1>
+      <p class="text-sm text-slate-500 mb-5">Template yang dipakai sistem untuk setiap event. Variable bertanda <span class="mono">{{ … }}</span>.</p>
+
+      <div class="grid grid-cols-2 gap-5">
+        <!-- email 1 -->
+        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <div class="px-4 py-2 bg-slate-100 border-b text-xs flex justify-between">
+            <span class="font-semibold">📧 Notifikasi Schedule (H-7)</span>
+            <span class="mono text-slate-500">audit.scheduled</span>
+          </div>
+          <div class="p-4 text-sm space-y-2">
+            <div><span class="text-slate-500 text-xs">To:</span> <span class="mono">{{auditee_emails}}</span></div>
+            <div><span class="text-slate-500 text-xs">Cc:</span> <span class="mono">{{atasan_emails}}</span></div>
+            <div><span class="text-slate-500 text-xs">Subject:</span> <b>[Internal Audit] Jadwal Audit {{kode}} — {{departemen}}</b></div>
+            <hr/>
+            <p>Yth. Bapak/Ibu {{nama_auditee}},</p>
+            <p>Dengan ini diberitahukan jadwal Internal Audit untuk departemen <b>{{departemen}}</b>:</p>
+            <ul class="text-xs space-y-0.5 pl-4 list-disc">
+              <li>Tanggal: <b>{{tanggal_audit}}</b></li>
+              <li>Lokasi: {{lokasi}}</li>
+              <li>Lead Auditor: {{lead_auditor}}</li>
+              <li>Scope: {{scope}}</li>
+            </ul>
+            <p>Mohon menyiapkan dokumen pendukung sebelum tanggal audit.</p>
+            <p class="text-xs text-slate-500">— Document Control</p>
+          </div>
+        </div>
+
+        <!-- email 2 -->
+        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <div class="px-4 py-2 bg-slate-100 border-b text-xs flex justify-between">
+            <span class="font-semibold">📧 Approval Request (Minor/Major)</span>
+            <span class="mono text-slate-500">finding.approval_requested</span>
+          </div>
+          <div class="p-4 text-sm space-y-2">
+            <div><span class="text-slate-500 text-xs">To:</span> <span class="mono">{{atasan_email}}</span></div>
+            <div><span class="text-slate-500 text-xs">Subject:</span> <b>Approval Corrective Action — {{kode_finding}}</b></div>
+            <hr/>
+            <p>Terdapat temuan audit kategori <b class="text-red-600">{{kategori}}</b> di departemen <b>{{departemen}}</b>.</p>
+            <p>Auditee telah mengisi tindakan perbaikan. Mohon approval Bapak/Ibu.</p>
+            <div class="bg-slate-50 rounded p-2 text-xs">
+              <div><b>Temuan:</b> {{deskripsi_temuan}}</div>
+              <div><b>Tindakan:</b> {{corrective_action}}</div>
+              <div><b>Deadline:</b> {{due_date}}</div>
+            </div>
+            <a class="inline-block px-3 py-1.5 bg-brand text-white text-xs rounded">Approve di Sistem</a>
+          </div>
+        </div>
+
+        <!-- email 3 -->
+        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <div class="px-4 py-2 bg-amber-50 border-b text-xs flex justify-between">
+            <span class="font-semibold">⏰ Reminder H-1</span>
+            <span class="mono text-slate-500">finding.due_soon</span>
+          </div>
+          <div class="p-4 text-sm space-y-2">
+            <div><span class="text-slate-500 text-xs">To:</span> <span class="mono">{{auditee_email}}</span> · <span class="text-slate-500 text-xs">Cc:</span> <span class="mono">{{atasan_email}}</span></div>
+            <div><span class="text-slate-500 text-xs">Subject:</span> <b>Reminder: Corrective Action {{kode}} jatuh tempo besok</b></div>
+            <hr/>
+            <p>Tindakan perbaikan untuk temuan <b>{{kode_finding}}</b> akan jatuh tempo pada <b>{{due_date}}</b>.</p>
+            <p>Mohon segera ditindaklanjuti.</p>
+          </div>
+        </div>
+
+        <!-- email 4 -->
+        <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <div class="px-4 py-2 bg-red-50 border-b text-xs flex justify-between">
+            <span class="font-semibold">🚨 Escalation H+3 Overdue</span>
+            <span class="mono text-slate-500">finding.escalation</span>
+          </div>
+          <div class="p-4 text-sm space-y-2">
+            <div><span class="text-slate-500 text-xs">To:</span> <span class="mono">{{auditee_email}}</span></div>
+            <div><span class="text-slate-500 text-xs">Cc:</span> <span class="mono">{{atasan}}, {{manager}}, {{doc_control}}</span></div>
+            <div><span class="text-slate-500 text-xs">Subject:</span> <b class="text-red-600">[ESCALATION] Corrective Action {{kode}} telah overdue 3 hari</b></div>
+            <hr/>
+            <p class="text-red-700">Temuan ini telah melewati deadline 3 hari. Diperlukan tindakan segera dari manajemen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 5. AUDIT EXECUTION ============== -->
+    <section id="audit-execute" class="section">
+      <div class="flex items-center justify-between mb-1">
+        <div>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="#schedule-list" class="hover:underline">Daftar Audit</a> <span>/</span>
+            <span class="mono">IA-2026-014</span>
+          </div>
+          <h1 class="text-2xl font-bold">Audit Produksi — 10 Juni 2026</h1>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="badge bg-blue-100 text-blue-700">In Progress</span>
+          <button class="px-3 py-1.5 text-xs border border-slate-300 rounded hover:bg-slate-50 flex items-center gap-1"><i data-lucide="file-down" class="size-3"></i> Export PDF</button>
+          <button class="px-3 py-1.5 text-xs bg-brand text-white rounded hover:bg-brand-dark font-semibold flex items-center gap-1"><i data-lucide="plus" class="size-3"></i> Tambah Temuan</button>
+        </div>
+      </div>
+
+      <!-- meta -->
+      <div class="grid grid-cols-4 gap-3 my-4">
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Lead Auditor</div><div class="text-sm font-semibold">Budi Santoso</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Auditor</div><div class="text-sm font-semibold">Dewi K., Hadi P.</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Auditee</div><div class="text-sm font-semibold">Pak Joko, Bu Lina</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Standar</div><div class="text-sm font-semibold">ISO 9001:2015</div></div>
+      </div>
+
+      <!-- tabs -->
+      <div class="bg-white border border-slate-200 rounded-lg">
+        <div class="flex border-b text-sm">
+          <button class="px-4 py-2.5 border-b-2 border-brand text-brand font-semibold">Temuan (6)</button>
+          <button class="px-4 py-2.5 text-slate-500 hover:text-slate-800">Checklist</button>
+          <button class="px-4 py-2.5 text-slate-500 hover:text-slate-800">Evidence</button>
+          <button class="px-4 py-2.5 text-slate-500 hover:text-slate-800">Riwayat</button>
+        </div>
+
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50">
+            <tr>
+              <th class="px-4 py-2 text-left">Kode</th>
+              <th class="px-4 py-2 text-left">Kategori</th>
+              <th class="px-4 py-2 text-left">Deskripsi</th>
+              <th class="px-4 py-2 text-left">Klausul</th>
+              <th class="px-4 py-2 text-left">PIC</th>
+              <th class="px-4 py-2 text-left">Due</th>
+              <th class="px-4 py-2 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">F-001</td><td class="px-4 py-2"><span class="badge bg-red-100 text-red-700">Major</span></td><td class="px-4 py-2">SOP pengecekan kalibrasi tidak dijalankan 3 shift terakhir</td><td class="px-4 py-2 mono text-xs">7.1.5</td><td class="px-4 py-2 text-xs">Pak Joko</td><td class="px-4 py-2 mono text-xs">20 Jun</td><td class="px-4 py-2"><span class="badge bg-amber-100 text-amber-700">Waiting Approval</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">F-002</td><td class="px-4 py-2"><span class="badge bg-amber-100 text-amber-700">Minor</span></td><td class="px-4 py-2">Form serah terima belum lengkap tanda tangan supervisor</td><td class="px-4 py-2 mono text-xs">8.5.1</td><td class="px-4 py-2 text-xs">Bu Lina</td><td class="px-4 py-2 mono text-xs">17 Jun</td><td class="px-4 py-2"><span class="badge bg-blue-100 text-blue-700">Progress</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">F-003</td><td class="px-4 py-2"><span class="badge bg-amber-100 text-amber-700">Minor</span></td><td class="px-4 py-2">Dokumen Work Instruction versi lama masih digunakan di Line A</td><td class="px-4 py-2 mono text-xs">7.5.3</td><td class="px-4 py-2 text-xs">Pak Joko</td><td class="px-4 py-2 mono text-xs">18 Jun</td><td class="px-4 py-2"><span class="badge bg-amber-100 text-amber-700">Waiting Verify</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">F-004</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">PFI</span></td><td class="px-4 py-2">Label rak material kurang jelas — disarankan font lebih besar</td><td class="px-4 py-2 mono text-xs">—</td><td class="px-4 py-2 text-xs">Bu Lina</td><td class="px-4 py-2 mono text-xs">—</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">Closed</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">F-005</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">PFI</span></td><td class="px-4 py-2">Penempatan dokumen di rak arsip kurang rapi</td><td class="px-4 py-2 mono text-xs">—</td><td class="px-4 py-2 text-xs">Pak Joko</td><td class="px-4 py-2 mono text-xs">—</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">Closed</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">F-006</td><td class="px-4 py-2"><span class="badge bg-red-100 text-red-700">Major</span></td><td class="px-4 py-2">Tidak ada evidence training operator baru periode Mei</td><td class="px-4 py-2 mono text-xs">7.2</td><td class="px-4 py-2 text-xs">Pak Joko</td><td class="px-4 py-2 mono text-xs">22 Jun</td><td class="px-4 py-2"><span class="badge bg-red-100 text-red-700 ring-1 ring-red-300">OVERDUE</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- legend -->
+      <div class="mt-4 bg-white border border-slate-200 rounded-lg p-4">
+        <div class="text-sm font-semibold mb-2">Aturan Kategori</div>
+        <div class="grid grid-cols-3 gap-3 text-xs">
+          <div class="border border-emerald-200 bg-emerald-50 rounded p-3">
+            <div class="flex items-center gap-2 mb-1"><span class="badge bg-emerald-100 text-emerald-700">PFI</span> <span class="font-semibold">Opportunity Improvement</span></div>
+            <p class="text-slate-600">Saran improvement. Tidak butuh approval — auditor bisa langsung closing.</p>
+          </div>
+          <div class="border border-amber-200 bg-amber-50 rounded p-3">
+            <div class="flex items-center gap-2 mb-1"><span class="badge bg-amber-100 text-amber-700">Minor</span> <span class="font-semibold">Ketidaksesuaian Kecil</span></div>
+            <p class="text-slate-600">Wajib corrective action → approval atasan → verifikasi → closing.</p>
+          </div>
+          <div class="border border-red-200 bg-red-50 rounded p-3">
+            <div class="flex items-center gap-2 mb-1"><span class="badge bg-red-100 text-red-700">Major</span> <span class="font-semibold">Ketidaksesuaian Besar</span></div>
+            <p class="text-slate-600">Wajib approval management + verifikasi lead auditor sebelum closing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 6. FINDING DETAIL ============== -->
+    <section id="finding-detail" class="section">
+      <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+        <a href="#audit-execute" class="hover:underline">IA-2026-014</a> <span>/</span>
+        <span class="mono">F-001</span>
+      </div>
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h1 class="text-2xl font-bold mb-1">SOP pengecekan kalibrasi tidak dijalankan 3 shift terakhir</h1>
+          <div class="flex items-center gap-2 text-sm">
+            <span class="badge bg-red-100 text-red-700">Major</span>
+            <span class="badge bg-amber-100 text-amber-700">Waiting Approval</span>
+            <span class="text-slate-500">Klausul 7.1.5 · Created 10 Jun by Budi S.</span>
+          </div>
+        </div>
+        <button class="px-3 py-1.5 text-xs border border-slate-300 rounded hover:bg-slate-50 flex items-center gap-1"><i data-lucide="file-down" class="size-3"></i> Cetak NCR</button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-5">
+        <!-- left col -->
+        <div class="col-span-2 space-y-4">
+          <div class="bg-white border border-slate-200 rounded-lg p-4">
+            <div class="text-sm font-semibold mb-2">1. Deskripsi Temuan</div>
+            <p class="text-sm text-slate-700">Saat pengecekan Line A pada audit tanggal 10 Juni, ditemukan bahwa SOP pengecekan kalibrasi mesin (SOP-PRD-014) tidak dijalankan pada 3 shift terakhir. Tidak ada catatan kalibrasi pada logbook shift 8 Juni (pagi), 9 Juni (malam), dan 10 Juni (pagi).</p>
+            <div class="mt-3">
+              <div class="text-xs text-slate-500 mb-1">Evidence Auditor</div>
+              <div class="flex gap-2">
+                <div class="border rounded p-2 text-xs flex items-center gap-2"><i data-lucide="image" class="size-4 text-slate-400"></i> logbook-shift.jpg</div>
+                <div class="border rounded p-2 text-xs flex items-center gap-2"><i data-lucide="file-text" class="size-4 text-slate-400"></i> SOP-PRD-014.pdf</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg p-4">
+            <div class="text-sm font-semibold mb-2">2. Root Cause Analysis (Auditee)</div>
+            <p class="text-sm text-slate-700">Operator shift malam belum mendapat training SOP terbaru revisi Mei 2026. Supervisor tidak melakukan briefing harian terkait perubahan SOP.</p>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg p-4">
+            <div class="text-sm font-semibold mb-2">3. Corrective Action (Auditee)</div>
+            <ul class="text-sm text-slate-700 list-disc pl-5 space-y-1">
+              <li>Mengadakan refreshment training SOP-PRD-014 untuk semua operator (deadline 15 Jun).</li>
+              <li>Memasang poster checklist kalibrasi di tiap mesin (deadline 17 Jun).</li>
+              <li>Supervisor wajib briefing harian dan tanda tangan logbook (mulai 11 Jun).</li>
+            </ul>
+            <div class="mt-3 text-xs text-slate-500">Due Date: <b class="mono text-slate-700">20 Jun 2026</b></div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg p-4">
+            <div class="text-sm font-semibold mb-2">4. Evidence Perbaikan</div>
+            <div class="border-2 border-dashed border-slate-300 rounded p-4 text-center text-xs text-slate-500">
+              <i data-lucide="upload" class="size-5 inline-block mb-1"></i>
+              <div>Drag & drop atau klik untuk upload — JPG/PNG/PDF maks 10MB</div>
+            </div>
+            <div class="flex gap-2 mt-2">
+              <div class="border rounded p-2 text-xs flex items-center gap-2 bg-slate-50"><i data-lucide="image" class="size-4 text-slate-400"></i> training-attendance.jpg</div>
+              <div class="border rounded p-2 text-xs flex items-center gap-2 bg-slate-50"><i data-lucide="image" class="size-4 text-slate-400"></i> poster-checklist.jpg</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- right col timeline + actions -->
+        <div class="space-y-4">
+          <div class="bg-white border border-slate-200 rounded-lg p-4">
+            <div class="text-sm font-semibold mb-3">Timeline</div>
+            <div class="space-y-3 text-sm">
+              <div class="flex gap-3">
+                <span class="timeline-dot bg-emerald-500 mt-1.5"></span>
+                <div><div class="font-semibold text-xs">Temuan dibuat</div><div class="text-xs text-slate-500">Budi S. · 10 Jun 14:20</div></div>
+              </div>
+              <div class="flex gap-3">
+                <span class="timeline-dot bg-emerald-500 mt-1.5"></span>
+                <div><div class="font-semibold text-xs">Auditee submit perbaikan</div><div class="text-xs text-slate-500">Pak Joko · 12 Jun 09:10</div></div>
+              </div>
+              <div class="flex gap-3">
+                <span class="timeline-dot bg-amber-500 mt-1.5 ring-2 ring-amber-200"></span>
+                <div><div class="font-semibold text-xs">Menunggu approval atasan</div><div class="text-xs text-slate-500">Pak Hendro (Manager) · sejak 12 Jun</div></div>
+              </div>
+              <div class="flex gap-3 opacity-50">
+                <span class="timeline-dot bg-slate-300 mt-1.5"></span>
+                <div><div class="font-semibold text-xs">Verifikasi Lead Auditor</div><div class="text-xs text-slate-500">—</div></div>
+              </div>
+              <div class="flex gap-3 opacity-50">
+                <span class="timeline-dot bg-slate-300 mt-1.5"></span>
+                <div><div class="font-semibold text-xs">Closed</div><div class="text-xs text-slate-500">—</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div class="text-sm font-semibold text-amber-900 mb-1">Aksi Diperlukan</div>
+            <p class="text-xs text-amber-800">Menunggu approval dari atasan auditee (Pak Hendro). Email approval sudah dikirim 12 Jun 09:11.</p>
+            <button class="mt-2 px-3 py-1.5 text-xs border border-amber-400 text-amber-900 rounded hover:bg-amber-100">Kirim Reminder Manual</button>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg p-4">
+            <div class="text-sm font-semibold mb-2">Diskusi</div>
+            <div class="text-xs text-slate-600 mb-3 italic">"SOP versi terbaru sudah disebar via group WA tapi belum ada training formal." — Pak Joko, 12 Jun</div>
+            <textarea placeholder="Tulis komentar…" class="w-full text-xs border rounded p-2"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 7. AUDITEE ACTION ============== -->
+    <section id="auditee-action" class="section">
+      <h1 class="text-2xl font-bold mb-1">Inbox Auditee — Corrective Action</h1>
+      <p class="text-sm text-slate-500 mb-5">Daftar tindakan perbaikan yang menjadi tanggung jawab Anda.</p>
+
+      <div class="grid grid-cols-4 gap-3 mb-5">
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Tugas Aktif</div><div class="text-2xl font-bold mt-1">5</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Menunggu Approval</div><div class="text-2xl font-bold mt-1 text-amber-600">2</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Overdue</div><div class="text-2xl font-bold mt-1 text-red-600">1</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Selesai Bulan Ini</div><div class="text-2xl font-bold mt-1 text-emerald-600">7</div></div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="bg-white border-l-4 border-red-500 border border-slate-200 rounded-lg p-4">
+          <div class="flex justify-between items-start mb-1">
+            <div>
+              <div class="text-xs text-slate-500 mono">F-006 · IA-2026-014</div>
+              <div class="font-semibold">Tidak ada evidence training operator baru periode Mei</div>
+            </div>
+            <span class="badge bg-red-100 text-red-700 ring-1 ring-red-300">OVERDUE 2 hari</span>
+          </div>
+          <div class="flex gap-3 text-xs text-slate-500 mt-2">
+            <span><i data-lucide="tag" class="size-3 inline"></i> Major</span>
+            <span><i data-lucide="calendar" class="size-3 inline"></i> Due: 22 Jun 2026</span>
+            <span><i data-lucide="user" class="size-3 inline"></i> Auditor: Budi S.</span>
+          </div>
+          <div class="mt-3 flex gap-2">
+            <button class="px-3 py-1.5 text-xs bg-brand text-white rounded hover:bg-brand-dark font-semibold">Isi Tindakan Perbaikan</button>
+            <button class="px-3 py-1.5 text-xs border border-slate-300 rounded hover:bg-slate-50">Detail</button>
+          </div>
+        </div>
+
+        <div class="bg-white border-l-4 border-amber-500 border border-slate-200 rounded-lg p-4">
+          <div class="flex justify-between items-start mb-1">
+            <div>
+              <div class="text-xs text-slate-500 mono">F-002 · IA-2026-014</div>
+              <div class="font-semibold">Form serah terima belum lengkap tanda tangan supervisor</div>
+            </div>
+            <span class="badge bg-amber-100 text-amber-700">Due dalam 3 hari</span>
+          </div>
+          <div class="flex gap-3 text-xs text-slate-500 mt-2">
+            <span><i data-lucide="tag" class="size-3 inline"></i> Minor</span>
+            <span><i data-lucide="calendar" class="size-3 inline"></i> Due: 17 Jun 2026</span>
+          </div>
+          <div class="mt-3 flex gap-2">
+            <a href="#finding-detail" class="px-3 py-1.5 text-xs bg-brand text-white rounded hover:bg-brand-dark font-semibold">Lanjutkan Pengisian</a>
+          </div>
+        </div>
+
+        <div class="bg-white border-l-4 border-blue-500 border border-slate-200 rounded-lg p-4">
+          <div class="flex justify-between items-start mb-1">
+            <div>
+              <div class="text-xs text-slate-500 mono">F-001 · IA-2026-014</div>
+              <div class="font-semibold">SOP pengecekan kalibrasi tidak dijalankan</div>
+            </div>
+            <span class="badge bg-blue-100 text-blue-700">Waiting Approval Atasan</span>
+          </div>
+          <div class="flex gap-3 text-xs text-slate-500 mt-2">
+            <span><i data-lucide="tag" class="size-3 inline"></i> Major</span>
+            <span><i data-lucide="user-check" class="size-3 inline"></i> Approver: Pak Hendro</span>
+            <span><i data-lucide="clock" class="size-3 inline"></i> Submit 2 hari lalu</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 8. APPROVAL ATASAN ============== -->
+    <section id="approval-atasan" class="section">
+      <h1 class="text-2xl font-bold mb-1">Approval Atasan</h1>
+      <p class="text-sm text-slate-500 mb-5">Inbox approval untuk corrective action kategori Minor & Major dari tim Anda.</p>
+
+      <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+        <div class="px-4 py-3 border-b bg-slate-50 flex justify-between items-center">
+          <div class="text-sm font-semibold">Menunggu Persetujuan (3)</div>
+          <div class="flex gap-1 text-xs">
+            <button class="px-2 py-1 rounded bg-white border">Semua</button>
+            <button class="px-2 py-1 rounded text-slate-500">Major</button>
+            <button class="px-2 py-1 rounded text-slate-500">Minor</button>
+          </div>
+        </div>
+
+        <div class="divide-y">
+          <div class="p-4 hover:bg-slate-50">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                  <span class="mono">F-001 · IA-2026-014</span>
+                  <span class="badge bg-red-100 text-red-700">Major</span>
+                </div>
+                <div class="font-semibold">SOP pengecekan kalibrasi tidak dijalankan</div>
+                <div class="text-xs text-slate-600 mt-1"><b>Auditee:</b> Pak Joko (Produksi) · <b>Disubmit:</b> 12 Jun 2026</div>
+                <details class="mt-2">
+                  <summary class="text-xs text-brand font-semibold hover:underline">Lihat tindakan perbaikan ↓</summary>
+                  <div class="mt-2 text-xs bg-slate-50 rounded p-3 space-y-1">
+                    <div><b>Root cause:</b> Operator shift malam belum training SOP terbaru.</div>
+                    <div><b>Action:</b> Refresh training, pasang poster, briefing harian.</div>
+                    <div><b>Due:</b> 20 Jun 2026</div>
+                  </div>
+                </details>
+              </div>
+              <div class="flex flex-col gap-2 ml-4 w-44">
+                <button class="px-3 py-1.5 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 font-semibold flex items-center justify-center gap-1"><i data-lucide="check" class="size-3"></i> Approve</button>
+                <button class="px-3 py-1.5 text-xs bg-red-600 text-white rounded hover:bg-red-700 font-semibold flex items-center justify-center gap-1"><i data-lucide="x" class="size-3"></i> Reject</button>
+                <button class="px-3 py-1.5 text-xs border border-slate-300 rounded hover:bg-slate-50">Minta Revisi</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 hover:bg-slate-50">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                  <span class="mono">F-002 · IA-2026-014</span>
+                  <span class="badge bg-amber-100 text-amber-700">Minor</span>
+                </div>
+                <div class="font-semibold">Form serah terima belum lengkap tanda tangan supervisor</div>
+                <div class="text-xs text-slate-600 mt-1"><b>Auditee:</b> Bu Lina · <b>Disubmit:</b> 13 Jun 2026</div>
+              </div>
+              <div class="flex flex-col gap-2 ml-4 w-44">
+                <button class="px-3 py-1.5 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 font-semibold">Approve</button>
+                <button class="px-3 py-1.5 text-xs bg-red-600 text-white rounded hover:bg-red-700 font-semibold">Reject</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 hover:bg-slate-50">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                  <span class="mono">F-009 · IA-2026-013</span>
+                  <span class="badge bg-amber-100 text-amber-700">Minor</span>
+                </div>
+                <div class="font-semibold">File arsip personalia belum diberi label periode</div>
+              </div>
+              <div class="flex flex-col gap-2 ml-4 w-44">
+                <button class="px-3 py-1.5 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700 font-semibold">Approve</button>
+                <button class="px-3 py-1.5 text-xs bg-red-600 text-white rounded hover:bg-red-700 font-semibold">Reject</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 9. VERIFY LEAD ============== -->
+    <section id="verify-lead" class="section">
+      <h1 class="text-2xl font-bold mb-1">Verifikasi Lead Auditor</h1>
+      <p class="text-sm text-slate-500 mb-5">Periksa perbaikan & evidence. Jika OK → Verified & Closed. Jika belum → Reject / Revisi.</p>
+
+      <div class="bg-white border border-slate-200 rounded-lg p-5">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+          <span class="mono">F-003 · IA-2026-014</span>
+          <span class="badge bg-amber-100 text-amber-700">Minor</span>
+          <span class="badge bg-blue-100 text-blue-700">Waiting Verification</span>
+        </div>
+        <h2 class="text-lg font-semibold">Dokumen Work Instruction versi lama masih digunakan di Line A</h2>
+
+        <div class="grid grid-cols-2 gap-5 mt-4">
+          <div>
+            <div class="text-xs font-semibold text-slate-500 uppercase mb-2">Temuan Awal</div>
+            <p class="text-sm">Ditemukan WI-PRD-007 rev.2 (lama) di operator station 3 & 5. Versi terbaru rev.4 (Mei 2026).</p>
+            <div class="mt-2 text-xs text-slate-500">Evidence auditor: 2 foto</div>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500 uppercase mb-2">Tindakan & Evidence (sudah di-approve atasan)</div>
+            <p class="text-sm">WI lama ditarik & dimusnahkan, WI rev.4 disebar dan dibriefing pada 14 Jun. Sticker "Latest Rev" dipasang.</p>
+            <div class="flex gap-2 mt-2">
+              <div class="border rounded p-2 text-xs flex items-center gap-2 bg-slate-50"><i data-lucide="image" class="size-3"></i> WI-baru-station.jpg</div>
+              <div class="border rounded p-2 text-xs flex items-center gap-2 bg-slate-50"><i data-lucide="file-text" class="size-3"></i> berita-acara.pdf</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t">
+          <div class="text-xs font-semibold text-slate-600 mb-2">Catatan Verifikasi (opsional)</div>
+          <textarea rows="2" class="w-full border border-slate-300 rounded px-3 py-2 text-sm" placeholder="Tulis catatan untuk arsip…"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+          <button class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 font-semibold flex items-center gap-1"><i data-lucide="x" class="size-4"></i> Reject — Minta Revisi</button>
+          <button class="px-4 py-2 text-sm bg-emerald-600 text-white rounded hover:bg-emerald-700 font-semibold flex items-center gap-1"><i data-lucide="badge-check" class="size-4"></i> Verified & Closed</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 10. REMINDERS ============== -->
+    <section id="reminders" class="section">
+      <h1 class="text-2xl font-bold mb-1">Notification & Reminder Center</h1>
+      <p class="text-sm text-slate-500 mb-5">Riwayat semua email otomatis yang dikirim sistem.</p>
+
+      <div class="grid grid-cols-4 gap-3 mb-5">
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Total Email (30d)</div><div class="text-2xl font-bold mt-1">147</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Reminder H-1</div><div class="text-2xl font-bold mt-1 text-amber-600">23</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Overdue H+1</div><div class="text-2xl font-bold mt-1 text-orange-600">9</div></div>
+        <div class="bg-white border border-slate-200 rounded p-3"><div class="text-[11px] text-slate-500">Escalation H+3</div><div class="text-2xl font-bold mt-1 text-red-600">3</div></div>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50">
+            <tr>
+              <th class="px-4 py-2 text-left">Waktu</th>
+              <th class="px-4 py-2 text-left">Tipe</th>
+              <th class="px-4 py-2 text-left">Ref</th>
+              <th class="px-4 py-2 text-left">Subject</th>
+              <th class="px-4 py-2 text-left">Penerima</th>
+              <th class="px-4 py-2 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">14 Jun 06:00</td><td class="px-4 py-2"><span class="badge bg-red-100 text-red-700">Escalation H+3</span></td><td class="px-4 py-2 mono text-xs">F-006</td><td class="px-4 py-2 text-xs">[ESCALATION] CA F-006 overdue 3 hari</td><td class="px-4 py-2 text-xs">Pak Joko +3 cc</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">Sent</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">12 Jun 06:00</td><td class="px-4 py-2"><span class="badge bg-orange-100 text-orange-700">Overdue H+1</span></td><td class="px-4 py-2 mono text-xs">F-006</td><td class="px-4 py-2 text-xs">CA F-006 sudah overdue</td><td class="px-4 py-2 text-xs">Pak Joko +1 cc</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">Sent</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">12 Jun 09:11</td><td class="px-4 py-2"><span class="badge bg-blue-100 text-blue-700">Approval Req</span></td><td class="px-4 py-2 mono text-xs">F-001</td><td class="px-4 py-2 text-xs">Approval Corrective Action — F-001</td><td class="px-4 py-2 text-xs">Pak Hendro</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">Opened</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">11 Jun 06:00</td><td class="px-4 py-2"><span class="badge bg-amber-100 text-amber-700">H-1</span></td><td class="px-4 py-2 mono text-xs">F-006</td><td class="px-4 py-2 text-xs">Reminder: CA F-006 jatuh tempo besok</td><td class="px-4 py-2 text-xs">Pak Joko +1 cc</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">Sent</span></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-2 mono text-xs">3 Jun 09:00</td><td class="px-4 py-2"><span class="badge bg-slate-100 text-slate-700">Schedule</span></td><td class="px-4 py-2 mono text-xs">IA-2026-014</td><td class="px-4 py-2 text-xs">[Internal Audit] Jadwal IA-2026-014 Produksi</td><td class="px-4 py-2 text-xs">2 auditee +2 cc</td><td class="px-4 py-2"><span class="badge bg-emerald-100 text-emerald-700">Sent</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-5 bg-white border border-slate-200 rounded-lg p-4">
+        <div class="text-sm font-semibold mb-2">Scheduler Setting</div>
+        <div class="grid grid-cols-3 gap-3 text-xs">
+          <div class="border rounded p-3"><div class="text-slate-500">Email H-7 schedule</div><div class="mono mt-1">cron: 0 8 * * * (08:00 setiap hari)</div></div>
+          <div class="border rounded p-3"><div class="text-slate-500">Reminder H-1</div><div class="mono mt-1">cron: 0 6 * * * (06:00 setiap hari)</div></div>
+          <div class="border rounded p-3"><div class="text-slate-500">Escalation H+3</div><div class="mono mt-1">cron: 0 6 * * * (06:00 setiap hari)</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 11. MATRIX ============== -->
+    <section id="matrix" class="section">
+      <h1 class="text-2xl font-bold mb-1">Matrix Temuan</h1>
+      <p class="text-sm text-slate-500 mb-5">Heatmap temuan per departemen × kategori (YTD 2026)</p>
+
+      <div class="bg-white border border-slate-200 rounded-lg p-4 overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-[11px] uppercase tracking-wider text-slate-500">
+              <th class="px-3 py-2 text-left">Departemen</th>
+              <th class="px-3 py-2 text-center">PFI</th>
+              <th class="px-3 py-2 text-center">Minor</th>
+              <th class="px-3 py-2 text-center">Major</th>
+              <th class="px-3 py-2 text-center">Total</th>
+              <th class="px-3 py-2 text-center">% Closed</th>
+              <th class="px-3 py-2 text-center">Avg Closing (hari)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            <tr><td class="px-3 py-2 font-semibold">Produksi</td><td class="px-3 py-2 text-center"><span class="badge bg-emerald-200 text-emerald-900">4</span></td><td class="px-3 py-2 text-center"><span class="badge bg-amber-300 text-amber-900">7</span></td><td class="px-3 py-2 text-center"><span class="badge bg-red-500 text-white">3</span></td><td class="px-3 py-2 text-center font-bold">14</td><td class="px-3 py-2 text-center text-emerald-600">79%</td><td class="px-3 py-2 text-center mono">11</td></tr>
+            <tr><td class="px-3 py-2 font-semibold">QC</td><td class="px-3 py-2 text-center"><span class="badge bg-emerald-100 text-emerald-700">3</span></td><td class="px-3 py-2 text-center"><span class="badge bg-amber-300 text-amber-900">6</span></td><td class="px-3 py-2 text-center"><span class="badge bg-red-300 text-red-900">2</span></td><td class="px-3 py-2 text-center font-bold">11</td><td class="px-3 py-2 text-center text-emerald-600">91%</td><td class="px-3 py-2 text-center mono">8</td></tr>
+            <tr><td class="px-3 py-2 font-semibold">Warehouse</td><td class="px-3 py-2 text-center"><span class="badge bg-emerald-300 text-emerald-900">4</span></td><td class="px-3 py-2 text-center"><span class="badge bg-amber-200 text-amber-900">4</span></td><td class="px-3 py-2 text-center"><span class="badge bg-red-200 text-red-700">1</span></td><td class="px-3 py-2 text-center font-bold">9</td><td class="px-3 py-2 text-center text-emerald-600">100%</td><td class="px-3 py-2 text-center mono">6</td></tr>
+            <tr><td class="px-3 py-2 font-semibold">HR</td><td class="px-3 py-2 text-center"><span class="badge bg-emerald-300 text-emerald-900">3</span></td><td class="px-3 py-2 text-center"><span class="badge bg-amber-200 text-amber-900">2</span></td><td class="px-3 py-2 text-center text-slate-400">0</td><td class="px-3 py-2 text-center font-bold">5</td><td class="px-3 py-2 text-center text-emerald-600">100%</td><td class="px-3 py-2 text-center mono">4</td></tr>
+            <tr><td class="px-3 py-2 font-semibold">IT</td><td class="px-3 py-2 text-center"><span class="badge bg-emerald-200 text-emerald-900">2</span></td><td class="px-3 py-2 text-center"><span class="badge bg-amber-100 text-amber-700">1</span></td><td class="px-3 py-2 text-center text-slate-400">0</td><td class="px-3 py-2 text-center font-bold">3</td><td class="px-3 py-2 text-center text-emerald-600">100%</td><td class="px-3 py-2 text-center mono">3</td></tr>
+          </tbody>
+          <tfoot class="border-t-2 border-slate-300">
+            <tr class="bg-slate-50">
+              <td class="px-3 py-2 font-bold">Total</td>
+              <td class="px-3 py-2 text-center font-bold">16</td>
+              <td class="px-3 py-2 text-center font-bold">20</td>
+              <td class="px-3 py-2 text-center font-bold">6</td>
+              <td class="px-3 py-2 text-center font-bold">42</td>
+              <td class="px-3 py-2 text-center font-bold text-emerald-700">86%</td>
+              <td class="px-3 py-2 text-center font-bold mono">7.5</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="grid grid-cols-2 gap-5 mt-5">
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="text-sm font-semibold mb-3">Trend Temuan (6 bulan)</div>
+          <div class="flex items-end gap-2 h-32">
+            <div class="flex-1 flex flex-col items-center"><div class="w-full bg-slate-200 rounded-t" style="height:40%"></div><div class="text-[10px] mt-1">Jan</div></div>
+            <div class="flex-1 flex flex-col items-center"><div class="w-full bg-slate-300 rounded-t" style="height:55%"></div><div class="text-[10px] mt-1">Feb</div></div>
+            <div class="flex-1 flex flex-col items-center"><div class="w-full bg-amber-300 rounded-t" style="height:70%"></div><div class="text-[10px] mt-1">Mar</div></div>
+            <div class="flex-1 flex flex-col items-center"><div class="w-full bg-amber-400 rounded-t" style="height:50%"></div><div class="text-[10px] mt-1">Apr</div></div>
+            <div class="flex-1 flex flex-col items-center"><div class="w-full bg-brand rounded-t" style="height:85%"></div><div class="text-[10px] mt-1">Mei</div></div>
+            <div class="flex-1 flex flex-col items-center"><div class="w-full bg-brand rounded-t" style="height:65%"></div><div class="text-[10px] mt-1">Jun</div></div>
+          </div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="text-sm font-semibold mb-3">KPI Audit</div>
+          <div class="space-y-3 text-sm">
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>Schedule Compliance</span><span class="font-semibold">92%</span></div>
+              <div class="h-2 bg-slate-100 rounded"><div class="h-full bg-emerald-500 rounded" style="width:92%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>On-time Closing Rate</span><span class="font-semibold">86%</span></div>
+              <div class="h-2 bg-slate-100 rounded"><div class="h-full bg-emerald-500 rounded" style="width:86%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>Re-audit Rate</span><span class="font-semibold">12%</span></div>
+              <div class="h-2 bg-slate-100 rounded"><div class="h-full bg-amber-500 rounded" style="width:12%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1"><span>Approval Lead Time (avg)</span><span class="font-semibold">2.3 hari</span></div>
+              <div class="h-2 bg-slate-100 rounded"><div class="h-full bg-blue-500 rounded" style="width:30%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 12. FLOW ============== -->
+    <section id="flow" class="section">
+      <h1 class="text-2xl font-bold mb-1">Status Flow Sistem</h1>
+      <p class="text-sm text-slate-500 mb-5">State machine temuan audit & alur besar sistem.</p>
+
+      <div class="bg-white border border-slate-200 rounded-lg p-6 mb-5">
+        <div class="text-sm font-semibold mb-4">Alur Besar Sistem</div>
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <div class="px-3 py-2 rounded bg-slate-100 border">Document Control</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-blue-50 border border-blue-200">Buat Schedule</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-blue-50 border border-blue-200">Email Otomatis H-7</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-amber-50 border border-amber-200">Pelaksanaan Audit</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-red-50 border border-red-200">Input Temuan</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-amber-50 border border-amber-200">Corrective Action (Auditee)</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-blue-50 border border-blue-200">Approval Atasan</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-blue-50 border border-blue-200">Verifikasi Lead</div>
+          <span>→</span>
+          <div class="px-3 py-2 rounded bg-emerald-50 border border-emerald-200">Closed</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-5">
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="text-sm font-semibold mb-3">PFI Flow</div>
+          <div class="space-y-2 text-xs">
+            <div class="px-3 py-2 rounded bg-emerald-50 border border-emerald-200">Open</div>
+            <div class="pl-3 text-slate-400">↓ (no approval needed)</div>
+            <div class="px-3 py-2 rounded bg-emerald-100 border border-emerald-300 font-semibold">Closed</div>
+          </div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="text-sm font-semibold mb-3">Minor Flow</div>
+          <div class="space-y-2 text-xs">
+            <div class="px-3 py-2 rounded bg-slate-50 border">Open</div>
+            <div class="pl-3 text-slate-400">↓ auditee isi CA</div>
+            <div class="px-3 py-2 rounded bg-blue-50 border border-blue-200">Progress</div>
+            <div class="pl-3 text-slate-400">↓ submit</div>
+            <div class="px-3 py-2 rounded bg-amber-50 border border-amber-200">Waiting Approval</div>
+            <div class="pl-3 text-slate-400">↓ atasan approve</div>
+            <div class="px-3 py-2 rounded bg-amber-50 border border-amber-200">Waiting Verification</div>
+            <div class="pl-3 text-slate-400">↓ lead verify</div>
+            <div class="px-3 py-2 rounded bg-emerald-100 border border-emerald-300 font-semibold">Closed</div>
+          </div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-lg p-4">
+          <div class="text-sm font-semibold mb-3">Major Flow</div>
+          <div class="space-y-2 text-xs">
+            <div class="px-3 py-2 rounded bg-slate-50 border">Open</div>
+            <div class="pl-3 text-slate-400">↓ CA + RCA</div>
+            <div class="px-3 py-2 rounded bg-blue-50 border border-blue-200">Progress</div>
+            <div class="pl-3 text-slate-400">↓</div>
+            <div class="px-3 py-2 rounded bg-amber-50 border border-amber-200">Waiting Approval Management</div>
+            <div class="pl-3 text-slate-400">↓ approve</div>
+            <div class="px-3 py-2 rounded bg-amber-50 border border-amber-200">Waiting Verification Lead</div>
+            <div class="pl-3 text-slate-400">↓ verified</div>
+            <div class="px-3 py-2 rounded bg-emerald-100 border border-emerald-300 font-semibold">Closed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 bg-white border border-slate-200 rounded-lg p-4">
+        <div class="text-sm font-semibold mb-3">Status Reference</div>
+        <div class="grid grid-cols-3 gap-2 text-xs">
+          <div class="flex items-center gap-2"><span class="badge bg-slate-100 text-slate-700">Open</span> <span class="text-slate-500">Temuan baru dibuat</span></div>
+          <div class="flex items-center gap-2"><span class="badge bg-blue-100 text-blue-700">Progress</span> <span class="text-slate-500">Sedang diperbaiki</span></div>
+          <div class="flex items-center gap-2"><span class="badge bg-amber-100 text-amber-700">Waiting Approval</span> <span class="text-slate-500">Menunggu atasan</span></div>
+          <div class="flex items-center gap-2"><span class="badge bg-amber-100 text-amber-700">Waiting Verification</span> <span class="text-slate-500">Menunggu lead auditor</span></div>
+          <div class="flex items-center gap-2"><span class="badge bg-emerald-100 text-emerald-700">Closed</span> <span class="text-slate-500">Sudah selesai</span></div>
+          <div class="flex items-center gap-2"><span class="badge bg-red-100 text-red-700">Overdue</span> <span class="text-slate-500">Lewat deadline</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="border-t bg-white px-5 py-3 text-xs text-slate-500 flex items-center justify-between">
+  <span>Mockup Internal Audit · ISO 19011 · BTI ISO-DMS</span>
+  <span>Klik menu di sidebar untuk navigasi antar layar</span>
+</footer>
+
+<script>
+  // simple section router
+  const sections = document.querySelectorAll('.section');
+  const links = document.querySelectorAll('.nav-link');
+  function show(id) {
+    sections.forEach(s => s.classList.toggle('active', s.id === id));
+    links.forEach(l => l.classList.toggle('active', l.dataset.section === id));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  links.forEach(l => l.addEventListener('click', (e) => {
+    e.preventDefault();
+    const id = l.dataset.section;
+    history.replaceState(null, '', '#' + id);
+    show(id);
+  }));
+  // anchor jumps inside content
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    if (a.classList.contains('nav-link')) return;
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      if (document.getElementById(id)?.classList.contains('section')) {
+        e.preventDefault();
+        history.replaceState(null, '', '#' + id);
+        show(id);
+      }
+    });
+  });
+  // initial
+  const initial = location.hash.slice(1) || 'dashboard-dc';
+  show(document.getElementById(initial) ? initial : 'dashboard-dc');
+  lucide.createIcons();
+</script>
+</body>
+</html>
